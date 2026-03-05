@@ -1,9 +1,10 @@
 {
   "buildFiles": [
     "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt",
-    "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native-permissions/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt",
     "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
     "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
+    "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native-worklets/android/build/generated/source/codegen/jni/CMakeLists.txt",
     "/home/zeeshan/emergency-response-system/mobile/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
@@ -21,6 +22,11 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "react_codegen_rnreanimated::@8afabad14bfffa3f8b9a": {
+      "artifactName": "react_codegen_rnreanimated",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
     "react_codegen_safeareacontext::@7984cd80db47aa7b952a": {
       "artifactName": "react_codegen_safeareacontext",
       "abi": "armeabi-v7a",
@@ -30,11 +36,6 @@
         "/home/zeeshan/.gradle/caches/9.0.0/transforms/6674e6cc609acce3f4c1e3e62b9ca47c/transformed/react-android-0.84.0-debug/prefab/modules/jsi/libs/android.armeabi-v7a/libjsi.so",
         "/home/zeeshan/.gradle/caches/9.0.0/transforms/6674e6cc609acce3f4c1e3e62b9ca47c/transformed/react-android-0.84.0-debug/prefab/modules/reactnative/libs/android.armeabi-v7a/libreactnative.so"
       ]
-    },
-    "react_codegen_RNPermissionsSpec::@7ad697819b753921c957": {
-      "artifactName": "react_codegen_RNPermissionsSpec",
-      "abi": "armeabi-v7a",
-      "runtimeFiles": []
     },
     "react_codegen_rngesturehandler_codegen::@39f233abcd2c728bc6ec": {
       "artifactName": "react_codegen_rngesturehandler_codegen",
@@ -62,6 +63,11 @@
         "/home/zeeshan/.gradle/caches/9.0.0/transforms/6674e6cc609acce3f4c1e3e62b9ca47c/transformed/react-android-0.84.0-debug/prefab/modules/jsi/libs/android.armeabi-v7a/libjsi.so",
         "/home/zeeshan/.gradle/caches/9.0.0/transforms/6674e6cc609acce3f4c1e3e62b9ca47c/transformed/react-android-0.84.0-debug/prefab/modules/reactnative/libs/android.armeabi-v7a/libreactnative.so"
       ]
+    },
+    "react_codegen_rnworklets::@68f58d84d4754f193387": {
+      "artifactName": "react_codegen_rnworklets",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
     }
   }
 }

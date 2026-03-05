@@ -1,38 +1,42 @@
-const mongoose = require("mongoose");
+/**
+ * EmergencySession.js
+ * Mongoose model for emergency sessions.
+ *
+ * npm install mongoose
+ */
 
-const emergencySessionSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
-  triggerType: {
-    type: String,
-    enum: ["impact", "manual"],
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ["pending", "escalated", "cancelled"],
-    default: "pending",
-  },
-  location: {
-    lat: Number,
-    lng: Number,
-  },
-  devicePlatform: {
-    type: String,
-    enum: ["android", "ios"],
-  },
-  startedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  escalatedAt: {
-    type: Date,
-  },
-});
+const mongoose = require('mongoose');
 
-module.exports = mongoose.model(
-  "EmergencySession",
-  emergencySessionSchema
+const locationSchema = new mongoose.Schema(
+  {
+    lat: { type: Number, required: true },
+    lng: { type: Number, required: true },
+  },
+  { _id: false },
 );
+
+const emergencySessionSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true, index: true },
+    status: {
+      type: String,
+      enum: ['ESCALATING', 'ACTIVE', 'RESOLVED'],
+      default: 'ESCALATING',
+    },
+    platform: { type: String, enum: ['android', 'ios'], required: true },
+    scenarioMessage: { type: String, default: 'Emergency – I need help.' },
+    location: { type: locationSchema, default: null },
+    impactTimestamp: { type: Number, required: true }, // epoch ms
+    resolvedAt: { type: Date, default: null },
+    resolvedReason: {
+      type: String,
+      enum: ['user_cancelled', 'responders_notified', null],
+      default: null,
+    },
+  },
+  {
+    timestamps: true, // createdAt, updatedAt
+  },
+);
+
+module.exports = mongoose.model('EmergencySession', emergencySessionSchema);

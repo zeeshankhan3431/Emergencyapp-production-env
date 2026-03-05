@@ -51,7 +51,7 @@ rule CXX_COMPILER__react_codegen_rngesturehandler_codegen_Debug
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__react_codegen_RNPermissionsSpec_Debug
+rule CXX_COMPILER__react_codegen_rnreanimated_Debug
   depfile = $DEP_FILE
   deps = gcc
   command = /home/zeeshan/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=x86_64-none-linux-android24 --sysroot=/home/zeeshan/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -94,6 +94,16 @@ rule CXX_SHARED_LIBRARY_LINKER__react_codegen_rnscreens_Debug
   command = $PRE_LINK && /home/zeeshan/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=x86_64-none-linux-android24 --sysroot=/home/zeeshan/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fPIC $LANGUAGE_COMPILE_FLAGS $ARCH_FLAGS $LINK_FLAGS -shared $SONAME_FLAG$SONAME -o $TARGET_FILE $in $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking CXX shared library $TARGET_FILE
   restat = $RESTAT
+
+
+#############################################
+# Rule for compiling CXX files.
+
+rule CXX_COMPILER__react_codegen_rnworklets_Debug
+  depfile = $DEP_FILE
+  deps = gcc
+  command = /home/zeeshan/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=x86_64-none-linux-android24 --sysroot=/home/zeeshan/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  description = Building CXX object $out
 
 
 #############################################

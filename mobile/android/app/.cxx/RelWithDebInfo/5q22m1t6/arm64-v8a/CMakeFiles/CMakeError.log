@@ -1,8 +1,8 @@
 CXX compiler IPO check failed with the following output:
 Change Dir: /home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/CMakeFiles/_CMakeLTOTest-CXX/bin
 
-Run Build Command(s):/home/zeeshan/Android/Sdk/cmake/3.22.1/bin/ninja && [1/4] Building CXX object CMakeFiles/foo.dir/foo.cpp.o
-[2/4] Building CXX object CMakeFiles/boo.dir/main.cpp.o
+Run Build Command(s):/home/zeeshan/Android/Sdk/cmake/3.22.1/bin/ninja && [1/4] Building CXX object CMakeFiles/boo.dir/main.cpp.o
+[2/4] Building CXX object CMakeFiles/foo.dir/foo.cpp.o
 [3/4] Linking CXX static library libfoo.a
 [4/4] Linking CXX executable boo
 FAILED: boo 

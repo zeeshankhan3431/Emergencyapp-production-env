@@ -45,9 +45,10 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/rngesturehandler_codegen_autolinked_build/cmake_install.cmake")
-  include("/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/RNPermissionsSpec_autolinked_build/cmake_install.cmake")
+  include("/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/rnreanimated_autolinked_build/cmake_install.cmake")
   include("/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/safeareacontext_autolinked_build/cmake_install.cmake")
   include("/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/rnscreens_autolinked_build/cmake_install.cmake")
+  include("/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/RelWithDebInfo/5q22m1t6/arm64-v8a/rnworklets_autolinked_build/cmake_install.cmake")
 
 endif()
 
