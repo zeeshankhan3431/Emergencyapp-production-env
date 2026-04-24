@@ -12,6 +12,7 @@ import { useEmergency, CONFIRMATION_SECONDS } from '../context/EmergencyContext'
 import { iosMotionService } from '../services/IOSMotionService';
 import { emergencyService } from '../services/EmergencyService';
 
+// TODO: Replace with real user ID from authentication (e.g. Firebase Auth uid)
 const PLACEHOLDER_USER_ID = 'user-001';
 
 export function useEmergencyFlow() {

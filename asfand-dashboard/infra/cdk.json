@@ -1,0 +1,68 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
+  "watch": {
+    "include": ["**"],
+    "exclude": ["README.md", "cdk*.json", "**/*.d.ts", "**/*.js", "tsconfig.json", "package*.json", "node_modules", "dist", "cdk.out"]
+  },
+  "context": {
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": true,
+    "deployEnv": "dev",
+    "adminAlertEmail": "ops@example.com",
+    "sageMakerThreatModelDataUrl": "",
+    "sageMakerThreatImageUri": "",
+    "sageMakerGeoModelDataUrl": "",
+    "sageMakerGeoImageUri": "",
+    "environments": {
+      "dev": {
+        "rdsMultiAz": false,
+        "rdsAllocatedStorageGiB": 100,
+        "rdsBackupRetentionDays": 7,
+        "redisNumCacheNodes": 1,
+        "openSearchDataNodes": 1,
+        "openSearchDedicatedMasterNodes": 0,
+        "openSearchVolumeSizeGiB": 20,
+        "kinesisShardCount": 2,
+        "kinesisRetentionHours": 24,
+        "sageMakerInferenceInstanceType": "ml.t2.medium",
+        "logRetentionDays": 90,
+        "lambdaErrorRateThresholdPercent": 1,
+        "kinesisIteratorAgeMsThreshold": 30000,
+        "rdsCpuThresholdPercent": 80
+      },
+      "staging": {
+        "rdsMultiAz": true,
+        "rdsAllocatedStorageGiB": 100,
+        "rdsBackupRetentionDays": 10,
+        "redisNumCacheNodes": 1,
+        "openSearchDataNodes": 2,
+        "openSearchDedicatedMasterNodes": 0,
+        "openSearchVolumeSizeGiB": 50,
+        "kinesisShardCount": 2,
+        "kinesisRetentionHours": 48,
+        "sageMakerInferenceInstanceType": "ml.m5.large",
+        "logRetentionDays": 90,
+        "lambdaErrorRateThresholdPercent": 1,
+        "kinesisIteratorAgeMsThreshold": 30000,
+        "rdsCpuThresholdPercent": 80
+      },
+      "prod": {
+        "rdsMultiAz": true,
+        "rdsAllocatedStorageGiB": 200,
+        "rdsBackupRetentionDays": 14,
+        "redisNumCacheNodes": 2,
+        "openSearchDataNodes": 3,
+        "openSearchDedicatedMasterNodes": 3,
+        "openSearchVolumeSizeGiB": 100,
+        "kinesisShardCount": 4,
+        "kinesisRetentionHours": 72,
+        "sageMakerInferenceInstanceType": "ml.m5.xlarge",
+        "logRetentionDays": 90,
+        "lambdaErrorRateThresholdPercent": 1,
+        "kinesisIteratorAgeMsThreshold": 30000,
+        "rdsCpuThresholdPercent": 75
+      }
+    }
+  }
+}

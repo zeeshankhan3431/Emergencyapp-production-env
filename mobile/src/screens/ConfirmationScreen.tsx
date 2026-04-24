@@ -24,8 +24,6 @@ import { useEmergencyFlow } from '../hooks/useEmergencyFlow';
 import { CONFIRMATION_SECONDS } from '../context/EmergencyContext';
 import { colors } from '../theme/colors';
 
-const HomeScreen: React.FC = () => null; // re-exported below to avoid lint warning
-
 const ConfirmationScreen: React.FC = () => {
   const { confirmUserSafe, triggerEscalation, emergencyState } = useEmergencyFlow();
 

@@ -93,18 +93,25 @@ const HomeScreen: React.FC = () => {
           return;
         }
 
-        // Request Doze exemption once
-        setTimeout(() => {
-          Alert.alert(
-            '🔋 Enable Background Protection',
-            'To detect emergencies when screen is locked:\n\n' +
-            'Settings → Apps → Emergency Response → Battery → Unrestricted\n\n' +
-            'This only needs to be done once.',
-            [
-              { text: 'Open Settings', onPress: () => Linking.openSettings() },
-              { text: 'Already Done', style: 'cancel' },
-            ],
-          );
+        // Request Doze exemption via system prompt
+        setTimeout(async () => {
+          try {
+            const isIgnored = await NativeModules.EmergencyModule.isIgnoringBatteryOptimizations();
+            if (!isIgnored) {
+              Alert.alert(
+                '🔋 Enable Background Protection',
+                'Your phone will kill the emergency sensor if battery optimizations are active.\n\nPlease tap "Allow" on the next screen to keep yourself protected continuously.',
+                [
+                  { 
+                    text: 'Continue', 
+                    onPress: () => NativeModules.EmergencyModule.requestIgnoreBatteryOptimizations() 
+                  },
+                ],
+              );
+            }
+          } catch (e) {
+            console.warn('Battery check failed:', e);
+          }
         }, 1500);
 
       } catch (err) {

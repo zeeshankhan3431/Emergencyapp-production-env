@@ -19,4 +19,8 @@ export const colors = {
   primaryLight: '#E3F2FD',
   border: '#E0E0E0',
   muted: '#9E9E9E',
+  white: '#FFFFFF',
 };
+
+// Alias for components that import COLORS (e.g. PrimaryButton)
+export const COLORS = colors;

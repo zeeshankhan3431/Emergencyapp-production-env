@@ -51,10 +51,19 @@ class EmergencyWatchdogJob : JobService() {
 
     override fun onStopJob(params: JobParameters?): Boolean { return true }
 
-    @Suppress("DEPRECATION")
+    /**
+     * Check if our service is running using getRunningAppProcesses()
+     * instead of the deprecated getRunningServices().
+     *
+     * We check if our app process has an importance level indicating
+     * it has a foreground service running.
+     */
     private fun isServiceRunning(): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager
-        return manager.getRunningServices(Int.MAX_VALUE)
-            .any { it.service.className == EmergencyForegroundService::class.java.name }
+        val processes = manager.runningAppProcesses ?: return false
+        return processes.any {
+            it.processName == packageName &&
+            it.importance == android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND_SERVICE
+        }
     }
 }

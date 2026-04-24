@@ -1,15 +1,12 @@
 /**
- * emergency.js — Fixed backend routes
- *
- * Fix 1: Added PATCH /sessions/:id for location update
- * Fix 2: Better error responses
- * Fix 3: All routes have try/catch
+ * emergency.js — Emergency session routes (ESM)
  */
 
-const express = require('express');
+import express from 'express';
+import EmergencySession from '../models/EmergencySession.js';
+import { sendEmergencyNotification } from '../services/notificationService.js';
+
 const router = express.Router();
-const EmergencySession = require('../models/EmergencySession');
-const { sendEmergencyNotification } = require('../services/notificationService');
 
 // ── POST /api/emergency/sessions ──────────────────────────────────────────────
 router.post('/sessions', async (req, res) => {
@@ -47,7 +44,6 @@ router.post('/sessions', async (req, res) => {
 });
 
 // ── PATCH /api/emergency/sessions/:id ────────────────────────────────────────
-// Update session fields (e.g. location after creation)
 router.patch('/sessions/:id', async (req, res) => {
   try {
     const updates = {};
@@ -117,4 +113,4 @@ router.get('/sessions/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

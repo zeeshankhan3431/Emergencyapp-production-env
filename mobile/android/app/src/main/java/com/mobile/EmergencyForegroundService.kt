@@ -62,7 +62,6 @@ class EmergencyForegroundService : Service(), SensorEventListener {
         private const val COOLDOWN_MS           = 4000L
 
         // Timing
-        private const val WAKELOCK_DURATION_MS  = 6 * 60 * 1000L   // 6 min per lock
         private const val WAKELOCK_RENEW_MS     = 5 * 60 * 1000L   // renew every 5 min
         private const val ALARM_INTERVAL_MS     = 8 * 60 * 1000L   // alarm every 8 min
         private const val SENSOR_REREGISTER_MS  = 30_000L           // sensor every 30s
@@ -213,7 +212,7 @@ class EmergencyForegroundService : Service(), SensorEventListener {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        Log.d(TAG, "onTaskRemoved — scheduling broadcast restart in 500ms")
+        Log.d(TAG, "onTaskRemoved — scheduling broadcast restart in 1000ms")
 
         // Use BroadcastReceiver for restart (more reliable than direct service start)
         val restartIntent = Intent(applicationContext, ServiceRestartReceiver::class.java).apply {
@@ -224,20 +223,37 @@ class EmergencyForegroundService : Service(), SensorEventListener {
             PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
         )
         val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        am.set(
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            SystemClock.elapsedRealtime() + 500,
-            pendingIntent
-        )
+        val triggerAt = SystemClock.elapsedRealtime() + 1000
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            am.setExactAndAllowWhileIdle(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                triggerAt,
+                pendingIntent
+            )
+        } else {
+            am.setExact(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                triggerAt,
+                pendingIntent
+            )
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy — alarm and watchdog will restart us")
+        Log.d(TAG, "onDestroy — service killed, firing immediate aggressive restart")
         handler.removeCallbacksAndMessages(null)
         unregisterSensor()
         releaseWakeLock()
-        // Ensure watchdog is running even after destroy
+        
+        // AGGRESSIVE RESTART: If the system kills us, immediately broadcast to start again
+        val restartIntent = Intent(applicationContext, ServiceRestartReceiver::class.java).apply {
+            action = ServiceRestartReceiver.ACTION_RESTART
+        }
+        sendBroadcast(restartIntent)
+
+        // Ensure watchdog is also running
         EmergencyWatchdogJob.schedule(applicationContext)
     }
 
@@ -358,7 +374,7 @@ class EmergencyForegroundService : Service(), SensorEventListener {
         releaseWakeLock()
         val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EmergencyApp::SensorWakeLock")
-        wakeLock?.acquire(WAKELOCK_DURATION_MS)
+        wakeLock?.acquire()
         Log.d(TAG, "WakeLock acquired")
     }
 
@@ -367,7 +383,7 @@ class EmergencyForegroundService : Service(), SensorEventListener {
             releaseWakeLock()
             val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
             wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EmergencyApp::SensorWakeLock")
-            wakeLock?.acquire(WAKELOCK_DURATION_MS)
+            wakeLock?.acquire()
             Log.d(TAG, "WakeLock renewed")
         } catch (e: Exception) {
             Log.e(TAG, "WakeLock renewal error: ${e.message}")

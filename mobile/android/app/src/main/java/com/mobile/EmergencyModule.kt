@@ -7,6 +7,9 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.Arguments
+import android.net.Uri
+import android.os.PowerManager
+import android.provider.Settings
 
 /**
  * EmergencyModule.kt — Updated for bridgeless architecture
@@ -57,6 +60,36 @@ class EmergencyModule(private val reactContext: ReactApplicationContext) :
             MainActivity.pendingMagnitude = 0f
 
             promise.resolve(map)
+        } catch (e: Exception) {
+            promise.reject("ERROR", e.message)
+        }
+    }
+
+    @ReactMethod
+    fun requestIgnoreBatteryOptimizations(promise: Promise) {
+        try {
+            val packageName = reactContext.packageName
+            val pm = reactContext.getSystemService(android.content.Context.POWER_SERVICE) as PowerManager
+            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent().apply {
+                    action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                    data = Uri.parse("package:$packageName")
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                reactContext.startActivity(intent)
+            }
+            promise.resolve(true)
+        } catch (e: Exception) {
+            promise.reject("ERROR", e.message)
+        }
+    }
+
+    @ReactMethod
+    fun isIgnoringBatteryOptimizations(promise: Promise) {
+        try {
+            val packageName = reactContext.packageName
+            val pm = reactContext.getSystemService(android.content.Context.POWER_SERVICE) as PowerManager
+            promise.resolve(pm.isIgnoringBatteryOptimizations(packageName))
         } catch (e: Exception) {
             promise.reject("ERROR", e.message)
         }

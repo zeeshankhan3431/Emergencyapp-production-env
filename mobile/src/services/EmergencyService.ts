@@ -14,13 +14,13 @@ import { callService } from './CallService';
 // ─── IMPORTANT: Update this IP to your machine's actual IP ───────────────────
 // Run `hostname -I` in terminal to find your IP
 // Emulator uses 10.0.2.2, real device uses your machine's LAN IP
-const DEV_MACHINE_IP = '127.0.1.1'; // <-- CHANGE THIS TO YOUR IP
+const DEV_MACHINE_IP = '127.0.1.1'; // <-- CHANGE THIS TO YOUR LAN IP for real devices
 
 const API_BASE = __DEV__
   ? Platform.OS === 'android'
-    ? `http://10.0.2.2:3000/api`          // Android emulator
-    : `http://localhost:3000/api`          // iOS simulator
-  : `http://${DEV_MACHINE_IP}:3000/api`;  // Real device release build
+    ? `http://10.0.2.2:5000/api`          // Android emulator
+    : `http://localhost:5000/api`          // iOS simulator
+  : `http://${DEV_MACHINE_IP}:5000/api`;  // Real device release build
 
 console.log('[EmergencyService] API_BASE:', API_BASE);
 

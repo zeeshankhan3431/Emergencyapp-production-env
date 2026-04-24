@@ -1,11 +1,9 @@
 /**
  * EmergencySession.js
  * Mongoose model for emergency sessions.
- *
- * npm install mongoose
  */
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const locationSchema = new mongoose.Schema(
   {
@@ -39,4 +37,4 @@ const emergencySessionSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model('EmergencySession', emergencySessionSchema);
+export default mongoose.model('EmergencySession', emergencySessionSchema);
