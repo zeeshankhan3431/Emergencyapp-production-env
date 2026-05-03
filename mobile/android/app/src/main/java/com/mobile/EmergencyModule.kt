@@ -10,16 +10,56 @@ import com.facebook.react.bridge.Arguments
 import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
+import android.content.pm.PackageManager
+import android.Manifest
+import android.speech.RecognizerIntent
+import android.telephony.SmsManager
+import androidx.core.content.ContextCompat
+import android.app.Activity
+import android.media.MediaRecorder
+import java.io.File
+import android.os.Build
+import java.util.Locale
 
 /**
  * EmergencyModule.kt — Updated for bridgeless architecture
  *
- * Added: getPendingImpact() — JS calls this on HomeScreen mount
- * to check if app was opened via an impact notification.
- * This avoids any crash-prone native-to-JS event emission at startup.
+ * Speech-to-text on Android uses ACTION_RECOGNIZE_SPEECH (system UI). This is far more
+ * reliable on emulators than SpeechRecognizer listener-only APIs (often ERROR_NO_MATCH / 7).
  */
 class EmergencyModule(private val reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
+
+    companion object {
+        /** Must match MainActivity.onActivityResult routing */
+        const val SPEECH_ACTIVITY_REQUEST_CODE = 9912
+
+        @Volatile
+        private var pendingSpeechPromise: Promise? = null
+
+        @JvmStatic
+        fun handleSpeechActivityResult(resultCode: Int, data: Intent?) {
+            val p = pendingSpeechPromise
+            pendingSpeechPromise = null
+            if (p == null) return
+
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                val matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                val best = matches?.firstOrNull()?.trim().orEmpty()
+                val map: WritableMap = Arguments.createMap()
+                map.putString("text", best)
+                p.resolve(map)
+            } else {
+                p.reject(
+                    "SPEECH_CANCELLED",
+                    "Speech was cancelled or no audio was captured. On emulator: enable Microphone in Extended Controls.",
+                )
+            }
+        }
+    }
+
+    private var mediaRecorder: MediaRecorder? = null
+    private var recordingFilePath: String? = null
 
     override fun getName(): String = "EmergencyModule"
 
@@ -43,11 +83,6 @@ class EmergencyModule(private val reactContext: ReactApplicationContext) :
         }
     }
 
-    /**
-     * JS calls this on HomeScreen mount to check if app was launched
-     * from an impact notification. Returns { impact: true, magnitude: 30.0 }
-     * or { impact: false, magnitude: 0.0 }
-     */
     @ReactMethod
     fun getPendingImpact(promise: Promise) {
         try {
@@ -55,7 +90,6 @@ class EmergencyModule(private val reactContext: ReactApplicationContext) :
             map.putBoolean("impact", MainActivity.pendingImpact)
             map.putDouble("magnitude", MainActivity.pendingMagnitude.toDouble())
 
-            // Clear after reading so it doesn't fire again on next mount
             MainActivity.pendingImpact = false
             MainActivity.pendingMagnitude = 0f
 
@@ -92,6 +126,146 @@ class EmergencyModule(private val reactContext: ReactApplicationContext) :
             promise.resolve(pm.isIgnoringBatteryOptimizations(packageName))
         } catch (e: Exception) {
             promise.reject("ERROR", e.message)
+        }
+    }
+
+    /**
+     * Opens the **system** speech recognizer (Google UI). Resolves when user finishes speaking.
+     */
+    @ReactMethod
+    fun startSpeechRecognition(language: String?, promise: Promise) {
+        if (pendingSpeechPromise != null) {
+            promise.reject("BUSY", "Speech recognition already in progress")
+            return
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                reactContext,
+                Manifest.permission.RECORD_AUDIO,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            promise.reject("NO_PERMISSION", "Microphone permission not granted")
+            return
+        }
+
+        val activity = reactContext.currentActivity
+        if (activity == null) {
+            promise.reject("NO_ACTIVITY", "No active screen available for voice recognition")
+            return
+        }
+
+        val resolvedLang = language?.takeIf { it.isNotBlank() } ?: Locale.getDefault().toLanguageTag()
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, resolvedLang)
+            putExtra(
+                RecognizerIntent.EXTRA_PROMPT,
+                "Speak clearly. Your words will appear as text.",
+            )
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+        }
+
+        activity.runOnUiThread {
+            try {
+                pendingSpeechPromise = promise
+                activity.startActivityForResult(intent, SPEECH_ACTIVITY_REQUEST_CODE)
+            } catch (e: Exception) {
+                pendingSpeechPromise = null
+                promise.reject("SPEECH_START_ERROR", e.message ?: "Could not open speech recognizer")
+            }
+        }
+    }
+
+    @ReactMethod
+    fun sendEmergencySms(phone: String, message: String, promise: Promise) {
+        if (ContextCompat.checkSelfPermission(
+                reactContext,
+                Manifest.permission.SEND_SMS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            promise.reject("NO_PERMISSION", "SMS permission not granted")
+            return
+        }
+
+        try {
+            val smsManager = SmsManager.getDefault()
+            val parts = smsManager.divideMessage(message)
+            smsManager.sendMultipartTextMessage(phone, null, parts, null, null)
+            promise.resolve(true)
+        } catch (e: Exception) {
+            promise.reject("SMS_ERROR", e.message)
+        }
+    }
+
+    @ReactMethod
+    fun startEmergencyRecording(promise: Promise) {
+        if (ContextCompat.checkSelfPermission(
+                reactContext,
+                Manifest.permission.RECORD_AUDIO,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            promise.reject("NO_PERMISSION", "Microphone permission not granted")
+            return
+        }
+
+        try {
+            val outputFile = File(
+                reactContext.cacheDir,
+                "emergency_${System.currentTimeMillis()}.m4a",
+            )
+
+            val recorder = createMediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                setAudioEncodingBitRate(96000)
+                setAudioSamplingRate(44100)
+                setOutputFile(outputFile.absolutePath)
+                prepare()
+                start()
+            }
+
+            mediaRecorder = recorder
+            recordingFilePath = outputFile.absolutePath
+            val map: WritableMap = Arguments.createMap()
+            map.putString("filePath", outputFile.absolutePath)
+            map.putBoolean("recording", true)
+            promise.resolve(map)
+        } catch (e: Exception) {
+            promise.reject("RECORDING_START_ERROR", e.message)
+        }
+    }
+
+    @ReactMethod
+    fun stopEmergencyRecording(promise: Promise) {
+        try {
+            mediaRecorder?.apply {
+                stop()
+                reset()
+                release()
+            }
+            mediaRecorder = null
+            val map: WritableMap = Arguments.createMap()
+            map.putString("filePath", recordingFilePath)
+            map.putBoolean("recording", false)
+            promise.resolve(map)
+        } catch (e: Exception) {
+            promise.reject("RECORDING_STOP_ERROR", e.message)
+        } finally {
+            mediaRecorder = null
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun createMediaRecorder(): MediaRecorder {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            MediaRecorder(reactContext)
+        } else {
+            MediaRecorder()
         }
     }
 

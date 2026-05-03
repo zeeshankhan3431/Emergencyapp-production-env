@@ -14,7 +14,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../theme/colors';

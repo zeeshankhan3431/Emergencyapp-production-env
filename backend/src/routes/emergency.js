@@ -11,7 +11,15 @@ const router = express.Router();
 // ── POST /api/emergency/sessions ──────────────────────────────────────────────
 router.post('/sessions', async (req, res) => {
   try {
-    const { userId, scenarioMessage, location, platform, impactTimestamp } = req.body;
+    const {
+      userId,
+      scenarioMessage,
+      location,
+      platform,
+      impactTimestamp,
+      evidenceConsent,
+      emergencyContacts,
+    } = req.body;
 
     if (!userId || !platform || !impactTimestamp) {
       return res.status(400).json({
@@ -25,6 +33,8 @@ router.post('/sessions', async (req, res) => {
       location: location || null,
       platform,
       impactTimestamp,
+      evidenceConsent: evidenceConsent || { granted: false, grantedAt: null, version: 'v1' },
+      emergencyContacts: Array.isArray(emergencyContacts) ? emergencyContacts : [],
       status: 'ESCALATING',
     });
 

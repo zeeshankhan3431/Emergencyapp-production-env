@@ -19,12 +19,11 @@
 import { AppState, AppStateStatus } from 'react-native';
 import {
   accelerometer,
-  gyroscope,
   setUpdateIntervalForType,
   SensorTypes,
 } from 'react-native-sensors';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 // ── Thresholds ────────────────────────────────────────────────────────────────
 

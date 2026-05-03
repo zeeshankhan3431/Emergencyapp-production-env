@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useEmergency, CONFIRMATION_SECONDS } from '../context/EmergencyContext';
+import { useEmergency } from '../context/EmergencyContext';
 import { iosMotionService } from '../services/IOSMotionService';
 import { emergencyService } from '../services/EmergencyService';
 
@@ -57,7 +57,7 @@ export function useEmergencyFlow() {
       default:
         break;
     }
-  }, [state.status]); // eslint-disable-line
+  }, [nav, startCountdown, state.status]);
 
   // ── Actions ────────────────────────────────────────────────────────────────
 

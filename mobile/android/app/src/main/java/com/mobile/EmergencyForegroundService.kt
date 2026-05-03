@@ -77,6 +77,8 @@ class EmergencyForegroundService : Service(), SensorEventListener {
                     context.startService(i)
                 }
                 Log.d("EmergencyService", "Service start requested")
+                scheduleAlarmViaBroadcast(context)
+                EmergencyWatchdogJob.schedule(context)
             } catch (e: Exception) {
                 Log.e("EmergencyService", "Failed to start service: ${e.message}")
             }
@@ -213,6 +215,7 @@ class EmergencyForegroundService : Service(), SensorEventListener {
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         Log.d(TAG, "onTaskRemoved — scheduling broadcast restart in 1000ms")
+        EmergencyForegroundService.start(applicationContext)
 
         // Use BroadcastReceiver for restart (more reliable than direct service start)
         val restartIntent = Intent(applicationContext, ServiceRestartReceiver::class.java).apply {

@@ -45,6 +45,14 @@ class MainActivity : ReactActivity() {
         intent?.let { handleImpactIntent(it) }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EmergencyModule.SPEECH_ACTIVITY_REQUEST_CODE) {
+            EmergencyModule.handleSpeechActivityResult(resultCode, data)
+        }
+    }
+
     private fun handleImpactIntent(intent: Intent) {
         val impactDetected = intent.getBooleanExtra(
             EmergencyForegroundService.EXTRA_IMPACT, false

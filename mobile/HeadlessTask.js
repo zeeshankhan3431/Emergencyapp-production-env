@@ -16,7 +16,7 @@
  *       periodic heartbeat that wakes this task to re-subscribe if needed.
  */
 
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import { NativeModules } from 'react-native';
 import { impactDetectionService } from './src/services/ImpactDetectionService';
 import { EmergencyFlowBridge } from './src/hooks/useEmergencyFlow';
 

@@ -20,11 +20,16 @@ import {
   PermissionsAndroid,
   NativeModules,
   Linking,
+  TextInput,
+  Switch,
 } from 'react-native';
 import { useEmergencyFlow, EmergencyFlowBridge } from '../hooks/useEmergencyFlow';
 import { useEmergency } from '../context/EmergencyContext';
 import { impactDetectionService } from '../services/ImpactDetectionService';
 import { colors } from '../theme/colors';
+import VoiceMicButton from '../components/VoiceMicButton';
+import { contactsService, EmergencyContact } from '../services/ContactsService';
+import { consentService } from '../services/ConsentService';
 
 let setupDone = false;
 
@@ -38,6 +43,11 @@ const SCENARIOS = [
 const HomeScreen: React.FC = () => {
   const { triggerManual, setScenario, emergencyState } = useEmergencyFlow();
   const { markImpact } = useEmergency();
+  const [customScenario, setCustomScenario] = React.useState(emergencyState.scenarioMessage);
+  const [contacts, setContacts] = React.useState<EmergencyContact[]>([]);
+  const [newContactName, setNewContactName] = React.useState('');
+  const [newContactPhone, setNewContactPhone] = React.useState('');
+  const [evidenceConsentEnabled, setEvidenceConsentEnabled] = React.useState(false);
 
   // ── 1. Check if opened from background impact notification ─────────────────
   useEffect(() => {
@@ -63,6 +73,22 @@ const HomeScreen: React.FC = () => {
     checkPendingImpact();
   }, [markImpact]);
 
+  useEffect(() => {
+    const loadContacts = async () => {
+      const saved = await contactsService.getAll();
+      setContacts(saved);
+    };
+    loadContacts();
+  }, []);
+
+  useEffect(() => {
+    const loadConsent = async () => {
+      const consent = await consentService.getEvidenceConsent();
+      setEvidenceConsentEnabled(consent.granted);
+    };
+    loadConsent();
+  }, []);
+
   // ── 2. One-time permissions + battery optimization request ──────────────────
   useEffect(() => {
     if (setupDone) return;
@@ -75,6 +101,9 @@ const HomeScreen: React.FC = () => {
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
           PermissionsAndroid.PERMISSIONS.CALL_PHONE,
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          PermissionsAndroid.PERMISSIONS.SEND_SMS,
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
         ]);
 
         const locationGranted =
@@ -147,7 +176,56 @@ const HomeScreen: React.FC = () => {
 
   const handleScenarioSelect = (message: string, label: string) => {
     setScenario(message);
+    setCustomScenario(message);
     Alert.alert('Scenario Set', `"${label}" selected.`, [{ text: 'OK' }]);
+  };
+
+  const handleCustomScenarioCommit = () => {
+    const message = customScenario.trim();
+    if (!message) return;
+    setScenario(message);
+  };
+
+  const handleVoiceResult = (spokenText: string) => {
+    const next = spokenText.trim();
+    if (!next) return;
+    setCustomScenario(next);
+    setScenario(next);
+  };
+
+  const handleAddContact = async () => {
+    const name = newContactName.trim();
+    const phone = newContactPhone.trim();
+    if (!name || !phone) {
+      Alert.alert('Missing details', 'Please add both contact name and phone number.');
+      return;
+    }
+    try {
+      await contactsService.add(name, phone);
+      setContacts(await contactsService.getAll());
+      setNewContactName('');
+      setNewContactPhone('');
+    } catch {
+      Alert.alert('Invalid phone number', 'Please enter a valid contact number (digits only).');
+    }
+  };
+
+  const handleDeleteContact = async (id: string) => {
+    await contactsService.remove(id);
+    setContacts(await contactsService.getAll());
+  };
+
+  const sanitizePhoneInput = (value: string): string => {
+    // Allow only digits and a leading +
+    const cleaned = value.replace(/[^\d+]/g, '');
+    if (!cleaned.includes('+')) return cleaned;
+    const digitsOnly = cleaned.replace(/\+/g, '');
+    return cleaned.startsWith('+') ? `+${digitsOnly}` : digitsOnly;
+  };
+
+  const handleEvidenceConsentToggle = async (enabled: boolean) => {
+    setEvidenceConsentEnabled(enabled);
+    await consentService.setEvidenceConsent(enabled);
   };
 
   const sensorActive = impactDetectionService.running;
@@ -213,6 +291,75 @@ const HomeScreen: React.FC = () => {
         </TouchableOpacity>
       ))}
 
+      <View style={styles.customBox}>
+        <Text style={styles.sectionTitle}>Custom Message (Voice or Typing)</Text>
+        <Text style={styles.sectionSubtitle}>
+          Use any language (English, Urdu, Hindi, etc.). Speech is transcribed to text.
+        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Describe your emergency for responders..."
+          placeholderTextColor="#999"
+          value={customScenario}
+          onChangeText={setCustomScenario}
+          onBlur={handleCustomScenarioCommit}
+          multiline
+        />
+        <VoiceMicButton onResult={handleVoiceResult} />
+      </View>
+
+      <View style={styles.contactsBox}>
+        <Text style={styles.sectionTitle}>Emergency Contacts (SMS Alert List)</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Contact name"
+          placeholderTextColor="#999"
+          value={newContactName}
+          onChangeText={setNewContactName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone number (e.g. +1...)"
+          placeholderTextColor="#999"
+          value={newContactPhone}
+          onChangeText={text => setNewContactPhone(sanitizePhoneInput(text))}
+          keyboardType="phone-pad"
+        />
+        <TouchableOpacity style={styles.addContactButton} onPress={handleAddContact}>
+          <Text style={styles.addContactButtonText}>Add Emergency Contact</Text>
+        </TouchableOpacity>
+
+        {contacts.map(contact => (
+          <View key={contact.id} style={styles.contactRow}>
+            <View>
+              <Text style={styles.contactName}>{contact.name}</Text>
+              <Text style={styles.contactPhone}>{contact.phone}</Text>
+            </View>
+            <TouchableOpacity onPress={() => handleDeleteContact(contact.id)}>
+              <Text style={styles.deleteText}>Remove</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.consentBox}>
+        <Text style={styles.sectionTitle}>Evidence Consent</Text>
+        <Text style={styles.sectionSubtitle}>
+          I consent to emergency audio evidence capture/upload when an emergency is active.
+        </Text>
+        <View style={styles.consentRow}>
+          <Text style={styles.consentText}>
+            {evidenceConsentEnabled ? 'Consent granted' : 'Consent not granted'}
+          </Text>
+          <Switch
+            value={evidenceConsentEnabled}
+            onValueChange={handleEvidenceConsentToggle}
+            trackColor={{ false: '#bbb', true: '#4CAF50' }}
+            thumbColor="#fff"
+          />
+        </View>
+      </View>
+
       <Text style={styles.footer}>
         Impact threshold: 2.5g · Confirmation: 10 seconds{'\n'}
         Native Kotlin sensor · Background protection active
@@ -263,4 +410,58 @@ const styles = StyleSheet.create({
   scenarioLabel: { fontSize: 15, fontWeight: '600', color: colors.text },
   scenarioCheck: { fontSize: 18, color: colors.danger },
   footer: { marginTop: 32, fontSize: 11, color: '#999', textAlign: 'center', lineHeight: 18 },
+  customBox: { marginTop: 20 },
+  contactsBox: { marginTop: 20 },
+  input: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: '#222',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  addContactButton: {
+    backgroundColor: '#1565C0',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  addContactButtonText: { color: '#fff', fontWeight: '700' },
+  contactRow: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#eee',
+    padding: 12,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  contactName: { fontSize: 14, fontWeight: '700', color: '#111' },
+  contactPhone: { fontSize: 13, color: '#555' },
+  deleteText: { color: '#D32F2F', fontWeight: '700' },
+  consentBox: {
+    marginTop: 20,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#eee',
+    padding: 14,
+  },
+  consentRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  consentText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#222',
+  },
 });

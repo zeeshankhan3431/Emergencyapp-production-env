@@ -19,13 +19,15 @@ import {
   Vibration,
   Platform,
   AccessibilityInfo,
+  TextInput,
 } from 'react-native';
 import { useEmergencyFlow } from '../hooks/useEmergencyFlow';
 import { CONFIRMATION_SECONDS } from '../context/EmergencyContext';
-import { colors } from '../theme/colors';
+import VoiceMicButton from '../components/VoiceMicButton';
 
 const ConfirmationScreen: React.FC = () => {
-  const { confirmUserSafe, triggerEscalation, emergencyState } = useEmergencyFlow();
+  const { confirmUserSafe, triggerEscalation, emergencyState, setScenario } = useEmergencyFlow();
+  const [draftMessage, setDraftMessage] = useState(emergencyState.scenarioMessage);
 
   // ── Countdown state ─────────────────────────────────────────────────────────
   const [secondsLeft, setSecondsLeft] = useState(CONFIRMATION_SECONDS);
@@ -97,6 +99,19 @@ const ConfirmationScreen: React.FC = () => {
     }
   };
 
+  const handleVoiceResult = (spokenText: string) => {
+    const next = spokenText.trim();
+    if (!next) return;
+    setDraftMessage(next);
+    setScenario(next);
+  };
+
+  const handleCommitMessage = () => {
+    const next = draftMessage.trim();
+    if (!next) return;
+    setScenario(next);
+  };
+
   const urgency = secondsLeft <= 3 ? 'critical' : secondsLeft <= 6 ? 'warning' : 'normal';
 
   return (
@@ -130,6 +145,16 @@ const ConfirmationScreen: React.FC = () => {
       {/* ── Scenario message preview ── */}
       <View style={styles.messageBox}>
         <Text style={styles.messageLabel}>Message that will be sent:</Text>
+        <TextInput
+          style={styles.messageInput}
+          value={draftMessage}
+          onChangeText={setDraftMessage}
+          onBlur={handleCommitMessage}
+          placeholder="Type or speak your emergency message"
+          placeholderTextColor="#777"
+          multiline
+        />
+        <VoiceMicButton onResult={handleVoiceResult} />
         <Text style={styles.messageText}>{emergencyState.scenarioMessage}</Text>
       </View>
 
@@ -223,6 +248,17 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   messageLabel: { fontSize: 12, color: '#888', marginBottom: 4 },
+  messageInput: {
+    backgroundColor: '#1f1f1f',
+    color: '#fff',
+    borderWidth: 1,
+    borderColor: '#444',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+    marginBottom: 10,
+  },
   messageText: { fontSize: 15, color: '#fff', fontWeight: '600' },
   safeButton: {
     backgroundColor: '#2E7D32',

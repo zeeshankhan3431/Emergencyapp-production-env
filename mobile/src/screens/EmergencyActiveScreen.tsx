@@ -25,12 +25,15 @@ import {
 import { useEmergencyFlow } from '../hooks/useEmergencyFlow';
 import { callService } from '../services/CallService';
 import { emergencyService } from '../services/EmergencyService';
-import { colors } from '../theme/colors';
+import { audioRecordingService } from '../services/AudioRecordingService';
+import { consentService } from '../services/ConsentService';
 
 const EmergencyActiveScreen: React.FC = () => {
   const { emergencyState, endEmergency } = useEmergencyFlow();
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [locationText, setLocationText] = useState('Fetching…');
+  const [recordingText, setRecordingText] = useState('Starting...');
+  const [contactsStatusText, setContactsStatusText] = useState('Checking...');
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   // ── Elapsed timer ───────────────────────────────────────────────────────────
@@ -65,6 +68,44 @@ const EmergencyActiveScreen: React.FC = () => {
     return () => loop.stop();
   }, [pulseAnim]);
 
+  useEffect(() => {
+    const contactsStatus = emergencyService.getLastContactNotificationStatus();
+    if (!contactsStatus.total) {
+      setContactsStatusText('No contacts configured');
+    } else if (!contactsStatus.failed) {
+      setContactsStatusText(`Sent to ${contactsStatus.sent}/${contactsStatus.total} contacts`);
+    } else {
+      setContactsStatusText(
+        `Sent ${contactsStatus.sent}, failed ${contactsStatus.failed} of ${contactsStatus.total}`,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    const startRecording = async () => {
+      try {
+        const consent = await consentService.getEvidenceConsent();
+        if (!consent.granted) {
+          setRecordingText('Consent not granted');
+          return;
+        }
+        const res = await audioRecordingService.start();
+        if (res.recording) {
+          setRecordingText('Recording in progress');
+        } else {
+          setRecordingText('Recording not supported on this device');
+        }
+      } catch (err: any) {
+        setRecordingText(`Recording failed: ${err?.message ?? 'unknown error'}`);
+      }
+    };
+
+    startRecording();
+    return () => {
+      audioRecordingService.stop().catch(() => {});
+    };
+  }, []);
+
   // ── Helpers ─────────────────────────────────────────────────────────────────
   const formatElapsed = (s: number): string => {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
@@ -76,7 +117,8 @@ const EmergencyActiveScreen: React.FC = () => {
     <ScrollView
       style={styles.root}
       contentContainerStyle={styles.content}
-      scrollEnabled={false}>
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator>
       {/* ── Header ── */}
       <View style={styles.headerRow}>
         <Animated.View style={[styles.activeDot, { transform: [{ scale: pulseAnim }] }]} />
@@ -104,6 +146,11 @@ const EmergencyActiveScreen: React.FC = () => {
       </View>
 
       <View style={styles.card}>
+        <Text style={styles.cardLabel}>Contacts Notification</Text>
+        <Text style={styles.cardValue}>{contactsStatusText}</Text>
+      </View>
+
+      <View style={styles.card}>
         <Text style={styles.cardLabel}>Platform</Text>
         <Text style={styles.cardValue}>
           {Platform.OS === 'android' ? '🤖 Android' : '🍎 iOS'}
@@ -113,7 +160,7 @@ const EmergencyActiveScreen: React.FC = () => {
       {/* ── Recording notice (M3 placeholder) ── */}
       <View style={[styles.card, styles.recordingCard]}>
         <Text style={styles.cardLabel}>🎙 Audio Recording</Text>
-        <Text style={styles.cardValue}>Will activate in Milestone 3</Text>
+        <Text style={styles.cardValue}>{recordingText}</Text>
       </View>
 
       {/* ── Retry call ── */}
@@ -147,7 +194,8 @@ export default EmergencyActiveScreen;
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#0D0D0D' },
-  content: { padding: 24, paddingBottom: 48, alignItems: 'center' },
+  /** Extra bottom padding so Retry / End Emergency stay above the system navigation bar when scrolling. */
+  content: { padding: 24, paddingBottom: 96, alignItems: 'center' },
 
   headerRow: {
     flexDirection: 'row',

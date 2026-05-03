@@ -7,9 +7,11 @@
  * Fix 4: Location properly configured
  */
 
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import { callService } from './CallService';
+import { contactsService } from './ContactsService';
+import { consentService } from './ConsentService';
 
 // ─── IMPORTANT: Update this IP to your machine's actual IP ───────────────────
 // Run `hostname -I` in terminal to find your IP
@@ -38,6 +40,12 @@ export interface SessionPayload {
   location: { lat: number; lng: number } | null;
   platform: 'android' | 'ios';
   impactTimestamp: number;
+  evidenceConsent?: {
+    granted: boolean;
+    grantedAt: number | null;
+    version: string;
+  };
+  emergencyContacts?: Array<{ name: string; phone: string }>;
 }
 
 export interface LocationResult {
@@ -46,6 +54,65 @@ export interface LocationResult {
 }
 
 class EmergencyService {
+  private lastContactNotify = { total: 0, sent: 0, failed: 0 };
+  private buildContactAlertMessage(
+    scenarioMessage: string,
+    location: LocationResult | null,
+    timestamp: number,
+  ): string {
+    const when = new Date(timestamp).toLocaleString();
+    const mapUrl = location
+      ? `https://maps.google.com/?q=${location.lat},${location.lng}`
+      : 'Location unavailable';
+    return [
+      'EMERGENCY ALERT',
+      scenarioMessage,
+      `Time: ${when}`,
+      `Location: ${location ? `${location.lat}, ${location.lng}` : 'Unavailable'}`,
+      `Map: ${mapUrl}`,
+      'This alert was sent automatically by the Emergency Response app.',
+    ].join('\n');
+  }
+
+  async notifyEmergencyContacts(
+    scenarioMessage: string,
+    location: LocationResult | null,
+    impactTimestamp: number,
+  ): Promise<void> {
+    if (Platform.OS !== 'android' || !NativeModules.EmergencyModule?.sendEmergencySms) {
+      this.lastContactNotify = { total: 0, sent: 0, failed: 0 };
+      return;
+    }
+
+    const contacts = await contactsService.getAll();
+    if (!contacts.length) {
+      this.lastContactNotify = { total: 0, sent: 0, failed: 0 };
+      return;
+    }
+
+    const alertMessage = this.buildContactAlertMessage(scenarioMessage, location, impactTimestamp);
+    let sent = 0;
+    let failed = 0;
+    await Promise.all(
+      contacts.map(async contact => {
+        try {
+          await NativeModules.EmergencyModule.sendEmergencySms(contact.phone, alertMessage);
+          sent += 1;
+        } catch (err: any) {
+          failed += 1;
+          console.warn(
+            `[EmergencyService] SMS failed for ${contact.phone}:`,
+            err?.message ?? 'unknown error',
+          );
+        }
+      }),
+    );
+    this.lastContactNotify = { total: contacts.length, sent, failed };
+  }
+
+  getLastContactNotificationStatus() {
+    return this.lastContactNotify;
+  }
 
   // ── Location ────────────────────────────────────────────────────────────────
 
@@ -155,6 +222,11 @@ class EmergencyService {
   ): Promise<string> {
     console.log('[EmergencyService] Escalating...');
 
+    const [consent, contacts] = await Promise.all([
+      consentService.getEvidenceConsent(),
+      contactsService.getAll(),
+    ]);
+
     // Run location + session creation in parallel for speed
     const [location, sessionId] = await Promise.all([
       this.getCurrentLocation(),
@@ -164,6 +236,8 @@ class EmergencyService {
         location: null, // Will be updated below if available
         platform: Platform.OS as 'android' | 'ios',
         impactTimestamp,
+        evidenceConsent: consent,
+        emergencyContacts: contacts.map(c => ({ name: c.name, phone: c.phone })),
       }),
     ]);
 
@@ -179,6 +253,9 @@ class EmergencyService {
         // Non-critical — location update failing doesn't stop emergency
       }
     }
+
+    // Notify emergency contacts via SMS with location/map link.
+    await this.notifyEmergencyContacts(scenarioMessage, location, impactTimestamp);
 
     // Initiate call
     await callService.initiateEmergencyCall();
