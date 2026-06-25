@@ -5,10 +5,17 @@ let poolInstance = null;
 
 export function getPool() {
   if (!poolInstance) {
-    const url = process.env.DATABASE_URL;
+    let url = process.env.DATABASE_URL;
+    
+    // If DATABASE_URL is not set, construct it from individual RDS environment variables
     if (!url) {
-      throw new Error('DATABASE_URL is not set');
+      const { RDS_HOST, RDS_PORT, RDS_USER, RDS_DATABASE, RDS_PASSWORD } = process.env;
+      if (!RDS_HOST || !RDS_PORT || !RDS_USER || !RDS_DATABASE || !RDS_PASSWORD) {
+        throw new Error('DATABASE_URL is not set and RDS environment variables are incomplete');
+      }
+      url = `postgresql://${RDS_USER}:${RDS_PASSWORD}@${RDS_HOST}:${RDS_PORT}/${RDS_DATABASE}`;
     }
+    
     poolInstance = new Pool({ connectionString: url });
   }
   return poolInstance;

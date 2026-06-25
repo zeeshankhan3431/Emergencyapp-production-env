@@ -26,15 +26,21 @@ function isAnalyst(req) { return req.user?.role === 'Analyst'; }
  * POST /api/incidents — any authenticated user (mobile app trigger)
  * The route is mounted with authenticateJWT but NOT the blanket requireRole guard;
  * see app.js where this route is mounted separately.
+ *
+ * IMPORTANT: Uses req.user.id (from JWT auth) as the user_id for the incident.
+ * The mobile client does NOT need to send user_id in the body — the backend
+ * derives it from the authenticated token. This prevents FK constraint failures
+ * from hardcoded/mismatched user_id values.
  */
 router.post('/', async (req, res) => {
   const { type, lat, lng, accuracy, device_id, encrypted_audio_key } = req.body ?? {};
-  const userId = req.body?.user_id ?? req.user?.id;
+  // Use authenticated user's ID from JWT. This is the source of truth.
+  const userId = req.user?.id;
 
   if (!userId || !type || lat == null || lng == null) {
     return res.status(400).json({
       error: 'VALIDATION',
-      message: 'user_id, type, lat and lng are required',
+      message: 'type, lat and lng are required (user_id derived from authentication)',
     });
   }
   if (!INCIDENT_TYPES.includes(type)) {

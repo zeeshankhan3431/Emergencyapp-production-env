@@ -1,18 +1,18 @@
 {
   "version": "53.0.0",
   "files": {
-    "6b43def615e78b93fbbe7c6ecec9cf4ea4d33eb0f0f4e2cd1ac67026965d5d5a": {
+    "71f78e9afa2cf224974da434b9b9d78d647af19d586a7c4aad1629e57b2af3e2": {
       "displayName": "EraObservability-dev Template",
       "source": {
         "path": "EraObservability-dev.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-us-east-1-c3c02df5": {
-          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1",
-          "objectKey": "6b43def615e78b93fbbe7c6ecec9cf4ea4d33eb0f0f4e2cd1ac67026965d5d5a.json",
+        "946849521533-us-east-1-ba7744ea": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "71f78e9afa2cf224974da434b9b9d78d647af19d586a7c4aad1629e57b2af3e2.json",
           "region": "us-east-1",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-us-east-1"
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
         }
       }
     }

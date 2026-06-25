@@ -11,21 +11,21 @@
     },
     "EraNetwork-dev": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/us-east-1",
+      "environment": "aws://946849521533/us-east-1",
       "properties": {
         "templateFile": "EraNetwork-dev.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1/f4afbeb0c02946ff09a3392d29e8be6395a4b342f9783f0d6717b70bdaa5d9c7.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-deploy-role-946849521533-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-cfn-exec-role-946849521533-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-946849521533-us-east-1/7394b6639505dfd15091960ac84f67fda69af384afc891a21b8d2a901d6bdee6.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "EraNetwork-dev.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-1",
+          "arn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-lookup-role-946849521533-us-east-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
@@ -46,21 +46,21 @@
     },
     "EraData-dev": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/us-east-1",
+      "environment": "aws://946849521533/us-east-1",
       "properties": {
         "templateFile": "EraData-dev.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1/bfff51f198ebba5c998db58ff25633c4fe627ef6889a0f731cad75bb6055f11c.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-deploy-role-946849521533-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-cfn-exec-role-946849521533-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-946849521533-us-east-1/480bc0b197ded3acc13dd561bb558a75f8f1de74a4f6afe7de04072222f2c05f.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "EraData-dev.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-1",
+          "arn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-lookup-role-946849521533-us-east-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
@@ -82,21 +82,21 @@
     },
     "EraCompute-dev": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/us-east-1",
+      "environment": "aws://946849521533/us-east-1",
       "properties": {
         "templateFile": "EraCompute-dev.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1/02eb218c89fcaaa07ab7db3b1688faa1c024f87999a44fff6d778bb151f82740.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-deploy-role-946849521533-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-cfn-exec-role-946849521533-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-946849521533-us-east-1/7fb5592de46ff3aed48022db69e9b99595d351ed301d21f56851cf618b23c6aa.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "EraCompute-dev.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-1",
+          "arn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-lookup-role-946849521533-us-east-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
@@ -119,21 +119,21 @@
     },
     "EraObservability-dev": {
       "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/us-east-1",
+      "environment": "aws://946849521533/us-east-1",
       "properties": {
         "templateFile": "EraObservability-dev.template.json",
         "terminationProtection": false,
         "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1/6b43def615e78b93fbbe7c6ecec9cf4ea4d33eb0f0f4e2cd1ac67026965d5d5a.json",
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-deploy-role-946849521533-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-cfn-exec-role-946849521533-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-946849521533-us-east-1/71f78e9afa2cf224974da434b9b9d78d647af19d586a7c4aad1629e57b2af3e2.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
           "EraObservability-dev.assets"
         ],
         "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-1",
+          "arn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-lookup-role-946849521533-us-east-1",
           "requiresBootstrapStackVersion": 8,
           "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
         }
@@ -145,6 +145,44 @@
       ],
       "additionalMetadataFile": "EraObservability-dev.metadata.json",
       "displayName": "EraObservability-dev"
+    },
+    "EraHosting-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "EraHosting-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "EraHosting-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://946849521533/us-east-1",
+      "properties": {
+        "templateFile": "EraHosting-dev.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-deploy-role-946849521533-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-cfn-exec-role-946849521533-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-946849521533-us-east-1/21c9923ee41dab69ba6e6ab984ba99c01db4d4ac7443ebd36b685a215a9b7926.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "EraHosting-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-lookup-role-946849521533-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "EraCompute-dev",
+        "EraNetwork-dev",
+        "EraData-dev",
+        "EraHosting-dev.assets"
+      ],
+      "additionalMetadataFile": "EraHosting-dev.metadata.json",
+      "displayName": "EraHosting-dev"
     },
     "Tree": {
       "type": "cdk:tree",

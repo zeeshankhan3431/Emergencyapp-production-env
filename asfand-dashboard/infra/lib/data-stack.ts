@@ -233,6 +233,12 @@ export class DataStack extends cdk.Stack {
     const osDataNodes = envConfig.openSearchDataNodes;
     const dedicatedMaster = envConfig.openSearchDedicatedMasterNodes;
 
+    // OpenSearch VPC domains require exactly one subnet (single-AZ for dev).
+    const openSearchSubnet = vpc.selectSubnets({
+      subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      availabilityZones: [vpc.availabilityZones[0]],
+    }).subnets[0];
+
     this.openSearchDomain = new opensearch.Domain(this, 'OpenSearch', {
       domainName: `era-search-${deployEnv}`,
       version: opensearch.EngineVersion.OPENSEARCH_2_11,
@@ -251,7 +257,7 @@ export class DataStack extends cdk.Stack {
         volumeType: cdk.aws_ec2.EbsDeviceVolumeType.GP3,
       },
       vpc,
-      vpcSubnets: [{ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }],
+      vpcSubnets: [{ subnets: [openSearchSubnet] }],
       securityGroups: [this.openSearchSecurityGroup],
       encryptionAtRest: { enabled: true },
       nodeToNodeEncryption: true,

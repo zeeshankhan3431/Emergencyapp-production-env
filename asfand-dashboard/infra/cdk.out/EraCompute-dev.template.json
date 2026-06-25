@@ -191,6 +191,7 @@
     ],
     "ClientName": "era-app-client-dev",
     "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
      "ALLOW_USER_SRP_AUTH",
      "ALLOW_REFRESH_TOKEN_AUTH"
     ],
@@ -430,6 +431,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -439,18 +448,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       },
       {
        "Action": [
@@ -492,7 +490,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -527,7 +526,7 @@
      }
     },
     "FunctionName": "realtime-threat-classifier-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/realtimeThreatClassifier.handler",
     "MemorySize": 512,
     "Role": {
      "Fn::GetAtt": [
@@ -561,7 +560,10 @@
     "RealtimeThreatClassifierFnServiceRoleC1198F73"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/RealtimeThreatClassifierFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/RealtimeThreatClassifierFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "RealtimeThreatClassifierFnLogRetentionCD04D8C1": {
@@ -677,9 +679,7 @@
     "Runtime": "nodejs22.x",
     "Timeout": 900,
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
      "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip"
     },
     "Role": {
@@ -904,6 +904,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -913,18 +921,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       }
      ],
      "Version": "2012-10-17"
@@ -947,7 +944,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -982,7 +980,7 @@
      }
     },
     "FunctionName": "evidence-processor-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/evidenceProcessor.handler",
     "MemorySize": 256,
     "Role": {
      "Fn::GetAtt": [
@@ -1016,7 +1014,10 @@
     "EvidenceProcessorFnServiceRoleF29341B8"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/EvidenceProcessorFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/EvidenceProcessorFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "EvidenceProcessorFnLogRetentionCB1B2FFC": {
@@ -1309,6 +1310,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -1318,18 +1327,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       },
       {
        "Action": [
@@ -1368,7 +1366,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -1406,7 +1405,7 @@
      }
     },
     "FunctionName": "audio-transcription-worker-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/audioTranscriptionWorker.handler",
     "MemorySize": 1024,
     "Role": {
      "Fn::GetAtt": [
@@ -1440,7 +1439,10 @@
     "AudioTranscriptionWorkerFnServiceRole5A72A66D"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/AudioTranscriptionWorkerFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/AudioTranscriptionWorkerFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "AudioTranscriptionWorkerFnLogRetentionB7B6FB74": {
@@ -1691,6 +1693,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -1700,18 +1710,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       },
       {
        "Action": [
@@ -1750,7 +1749,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -1788,7 +1788,7 @@
      }
     },
     "FunctionName": "incident-summariser-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/incidentSummariser.handler",
     "MemorySize": 512,
     "Role": {
      "Fn::GetAtt": [
@@ -1822,7 +1822,10 @@
     "IncidentSummariserFnServiceRoleE540FDB7"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/IncidentSummariserFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/IncidentSummariserFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "IncidentSummariserFnLogRetention65D556FD": {
@@ -2073,6 +2076,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -2082,18 +2093,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       },
       {
        "Action": [
@@ -2135,7 +2135,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -2170,7 +2171,7 @@
      }
     },
     "FunctionName": "incident-escalation-handler-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/incidentEscalationHandler.handler",
     "MemorySize": 512,
     "Role": {
      "Fn::GetAtt": [
@@ -2204,7 +2205,10 @@
     "IncidentEscalationHandlerFnServiceRole192FCBB9"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/IncidentEscalationHandlerFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/IncidentEscalationHandlerFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "IncidentEscalationHandlerFnLogRetention1EE45355": {
@@ -2456,6 +2460,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -2465,18 +2477,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       }
      ],
      "Version": "2012-10-17"
@@ -2499,7 +2500,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -2534,7 +2536,7 @@
      }
     },
     "FunctionName": "sms-dispatcher-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/smsDispatcher.handler",
     "MemorySize": 128,
     "Role": {
      "Fn::GetAtt": [
@@ -2568,7 +2570,10 @@
     "SmsDispatcherFnServiceRole2C0B3D50"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/SmsDispatcherFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/SmsDispatcherFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "SmsDispatcherFnLogRetention8C01E6CF": {
@@ -2838,6 +2843,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -2847,18 +2860,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       }
      ],
      "Version": "2012-10-17"
@@ -2881,7 +2883,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -2916,7 +2919,7 @@
      }
     },
     "FunctionName": "push-dispatcher-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/pushDispatcher.handler",
     "MemorySize": 128,
     "Role": {
      "Fn::GetAtt": [
@@ -2950,7 +2953,10 @@
     "PushDispatcherFnServiceRole1179356B"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/PushDispatcherFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/PushDispatcherFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "PushDispatcherFnLogRetention2C0277AC": {
@@ -3220,6 +3226,14 @@
       },
       {
        "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:ssm:us-east-1:946849521533:parameter/era/ai/*"
+      },
+      {
+       "Action": [
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
@@ -3229,18 +3243,7 @@
         "dynamodb:BatchGetItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:us-east-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*_dev"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
       }
      ],
      "Version": "2012-10-17"
@@ -3263,7 +3266,8 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async (event) => {\n  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));\n  return {};\n};\n"
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900.zip"
     },
     "Environment": {
      "Variables": {
@@ -3298,7 +3302,7 @@
      }
     },
     "FunctionName": "monthly-report-generator-dev",
-    "Handler": "index.handler",
+    "Handler": "src/lambda/monthlyReportGenerator.handler",
     "MemorySize": 1024,
     "Role": {
      "Fn::GetAtt": [
@@ -3332,7 +3336,10 @@
     "MonthlyReportGeneratorFnServiceRole312930E7"
    ],
    "Metadata": {
-    "aws:cdk:path": "EraCompute-dev/MonthlyReportGeneratorFn/Resource"
+    "aws:cdk:path": "EraCompute-dev/MonthlyReportGeneratorFn/Resource",
+    "aws:asset:path": "asset.74f4dcbaf26ff0823e30a613e25715fb3243509d3695656f8b4bab058419e900",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
    }
   },
   "MonthlyReportGeneratorFnLogRetentionF5663613": {
@@ -3441,7 +3448,7 @@
      "arm64"
     ],
     "Code": {
-     "ZipFile": "\nexports.handler = async () => ({\n  statusCode: 200,\n  headers: { 'content-type': 'application/json' },\n  body: JSON.stringify({ ok: true }),\n});\n"
+     "ZipFile": "\nexports.handler = async () => ({\n  statusCode: 200,\n  headers: { 'content-type': 'application/json' },\n  body: JSON.stringify({ ok: true, service: 'era-health' }),\n});\n"
     },
     "Environment": {
      "Variables": {
@@ -3587,14 +3594,18 @@
    "Type": "AWS::ApiGatewayV2::Api",
    "Properties": {
     "CorsConfiguration": {
+     "AllowCredentials": true,
      "AllowHeaders": [
-      "*"
+      "Authorization",
+      "Content-Type",
+      "Cookie",
+      "X-Registration-Secret"
      ],
      "AllowMethods": [
       "*"
      ],
      "AllowOrigins": [
-      "*"
+      "https://d3kj7wc3d0h4x7.cloudfront.net"
      ]
     },
     "Description": "Emergency response HTTP API",
@@ -3612,8 +3623,7 @@
      "Ref": "HttpApiF5A9A8A7"
     },
     "AutoDeploy": true,
-    "StageName": "$default",
-    "TracingEnabled": true
+    "StageName": "$default"
    },
    "Metadata": {
     "aws:cdk:path": "EraCompute-dev/HttpApi/DefaultStage/Resource"
@@ -3657,11 +3667,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:us-east-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       ":execute-api:us-east-1:946849521533:",
        {
         "Ref": "HttpApiF5A9A8A7"
        },
@@ -3736,11 +3742,7 @@
        {
         "Ref": "AWS::Partition"
        },
-       ":execute-api:us-east-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       ":execute-api:us-east-1:946849521533:",
        {
         "Ref": "HttpApiF5A9A8A7"
        },
@@ -3914,7 +3916,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22QwU7DMAyGn4V7ZqaOA9dtAoEEYnRwnrLMFLM2KbGzCaK8O0rKCkKc/Pn/HTt2BdXFJUzP9JEnZreftLSFuBZt9kofeRP3ZJGJs+ZRd2r5YgdKit8Z4mPAgFktkJRxjSVxEJ8Z/cq5Nnsjn2DZElr5bQ1KUmwZ4pPryWR3gHXYsvHUCzlbPvArT6rV3XanIV4Ha04VI18d0MraBW/wXvc92Sbb/6sr9B0xl6akO4i1a8tqJa5cS+aj1BVKqnUNw51rahS0ZRrPNpoZhWGeg+IZLILZoyw0o8I8lSHW4bttaDEp3VOjBY/641BBvBHp5z1lO4ecrkU3ONw9Q5ZqF2SgWyvYeH3a+0/6UzcP8uo8faIvrccspZwvnd3R+Ai5XEaNUJbJ078P9RCkD5KUdTuENz4/VBVUU5ievTHRxAcr1CHUQ/wChCWrE2ECAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22QUU8CMQzHP4vvo5rDB1+RaDTRiIc+kzHKWbjbzrWD4LLvbrYDNMan/vr/d+3aCqrrG7i60HsemdV21NIS4ly02Sq950XckkUmzppH3anp2g6UFH8yxNeAAbNaICnjGkviIL4z+plzbfbOfIJpS2jltzUoSbFliG+uJ5PdAeZhycZTL+Rs+cCvPKlWd8uVhngfrDlVnPluh1bmLniDz7rvyTbZ/l+doe+IuTQl3UGsXVtWK3HmWjKHUlcoKR4vNDMKwyQHxWO4DWaLcqsZVesahifX1Choy18wT2WIdTi2DS0mpXtqtOBeH3YVxAeRftJTtnPI6Vx0g8PdM2SpdkEGerSCjdenvf+kP3WTIB/O0xf60vqcpZTzqbMrKo/KJnnQ8SY1cjmTOsN0bV+C9EGSsm6FsOHLXVVBVcHVxYaJRj5YoQ6hHuI3VbhzKmECAAA="
    },
    "Metadata": {
     "aws:cdk:path": "EraCompute-dev/CDKMetadata/Default"
@@ -4053,6 +4055,38 @@
    },
    "Export": {
     "Name": "EraCompute-dev:ExportsOutputRefHttpApiF5A9A8A7F70B5BDD"
+   }
+  },
+  "ExportsOutputRefUserPool6BA7E5F296FD7236": {
+   "Value": {
+    "Ref": "UserPool6BA7E5F2"
+   },
+   "Export": {
+    "Name": "EraCompute-dev:ExportsOutputRefUserPool6BA7E5F296FD7236"
+   }
+  },
+  "ExportsOutputRefUserPoolWebClient4C9370B02E2C9FF9": {
+   "Value": {
+    "Ref": "UserPoolWebClient4C9370B0"
+   },
+   "Export": {
+    "Name": "EraCompute-dev:ExportsOutputRefUserPoolWebClient4C9370B02E2C9FF9"
+   }
+  },
+  "ExportsOutputRefTranscriptionJobsC842707B81541DBA": {
+   "Value": {
+    "Ref": "TranscriptionJobsC842707B"
+   },
+   "Export": {
+    "Name": "EraCompute-dev:ExportsOutputRefTranscriptionJobsC842707B81541DBA"
+   }
+  },
+  "ExportsOutputRefSummarisationJobs37072A5CE5FABED7": {
+   "Value": {
+    "Ref": "SummarisationJobs37072A5C"
+   },
+   "Export": {
+    "Name": "EraCompute-dev:ExportsOutputRefSummarisationJobs37072A5CE5FABED7"
    }
   }
  },

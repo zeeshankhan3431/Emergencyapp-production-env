@@ -6,6 +6,7 @@ import { NetworkStack } from '../lib/network-stack';
 import { DataStack } from '../lib/data-stack';
 import { ComputeStack } from '../lib/compute-stack';
 import { ObservabilityStack } from '../lib/observability-stack';
+import { HostingStack } from '../lib/hosting-stack';
 
 const app = new cdk.App();
 
@@ -75,3 +76,27 @@ const observability = new ObservabilityStack(app, `EraObservability-${deployEnv}
   escalationHandlerFnName: compute.incidentEscalationHandler.functionName,
 });
 observability.addDependency(compute);
+
+const hosting = new HostingStack(app, `EraHosting-${deployEnv}`, {
+  env,
+  stackName: `EraHosting-${deployEnv}`,
+  deployEnv,
+  envConfig,
+  vpc: network.vpc,
+  rdsSecurityGroup: network.rdsSecurityGroup,
+  elasticacheSecurityGroup: network.elasticacheSecurityGroup,
+  rdsInstance: data.rdsInstance,
+  rdsSecret: data.rdsSecret,
+  userPoolId: compute.userPool.userPoolId,
+  userPoolClientId: compute.userPoolClient.userPoolClientId,
+  incidentStreamName: compute.incidentEventsStream.streamName,
+  evidenceBucketName: data.evidenceBucket.bucketName,
+  transcriptsBucketName: data.transcriptsBucket.bucketName,
+  reportsBucketName: data.reportsBucket.bucketName,
+  transcriptionQueueUrl: compute.transcriptionQueue.queueUrl,
+  summarisationQueueUrl: compute.summarisationQueue.queueUrl,
+  openSearchEndpoint: data.openSearchDomain.domainEndpoint,
+  redisEndpointAddress: data.redisEndpointAddress,
+  redisEndpointPort: data.redisEndpointPort,
+});
+hosting.addDependency(compute);

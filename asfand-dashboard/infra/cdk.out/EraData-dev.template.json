@@ -20,11 +20,7 @@
            {
             "Ref": "AWS::Partition"
            },
-           ":iam::",
-           {
-            "Ref": "AWS::AccountId"
-           },
-           ":root"
+           ":iam::946849521533:root"
           ]
          ]
         }
@@ -75,11 +71,7 @@
            {
             "Ref": "AWS::Partition"
            },
-           ":iam::",
-           {
-            "Ref": "AWS::AccountId"
-           },
-           ":root"
+           ":iam::946849521533:root"
           ]
          ]
         }
@@ -232,11 +224,7 @@
            {
             "Ref": "AWS::Partition"
            },
-           ":iam::",
-           {
-            "Ref": "AWS::AccountId"
-           },
-           ":root"
+           ":iam::946849521533:root"
           ]
          ]
         }
@@ -749,9 +737,6 @@
      "SubnetIds": [
       {
        "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpcprivateSubnet1SubnetD079BA0183CB9A21"
-      },
-      {
-       "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpcprivateSubnet2Subnet77EC42BD195859C9"
       }
      ]
     }
@@ -780,17 +765,7 @@
       }
      ]
     },
-    "BucketName": {
-     "Fn::Join": [
-      "",
-      [
-       "era-access-logs-dev-",
-       {
-        "Ref": "AWS::AccountId"
-       }
-      ]
-     ]
-    },
+    "BucketName": "era-access-logs-dev-946849521533",
     "PublicAccessBlockConfiguration": {
      "BlockPublicAcls": true,
      "BlockPublicPolicy": true,
@@ -858,9 +833,7 @@
          }
         },
         "StringEquals": {
-         "aws:SourceAccount": {
-          "Ref": "AWS::AccountId"
-         }
+         "aws:SourceAccount": "946849521533"
         }
        },
        "Effect": "Allow",
@@ -894,9 +867,7 @@
          }
         },
         "StringEquals": {
-         "aws:SourceAccount": {
-          "Ref": "AWS::AccountId"
-         }
+         "aws:SourceAccount": "946849521533"
         }
        },
        "Effect": "Allow",
@@ -930,9 +901,7 @@
          }
         },
         "StringEquals": {
-         "aws:SourceAccount": {
-          "Ref": "AWS::AccountId"
-         }
+         "aws:SourceAccount": "946849521533"
         }
        },
        "Effect": "Allow",
@@ -981,17 +950,7 @@
       }
      ]
     },
-    "BucketName": {
-     "Fn::Join": [
-      "",
-      [
-       "era-evidence-dev-",
-       {
-        "Ref": "AWS::AccountId"
-       }
-      ]
-     ]
-    },
+    "BucketName": "era-evidence-dev-946849521533",
     "LoggingConfiguration": {
      "DestinationBucketName": {
       "Ref": "AccessLogs8B620ECA"
@@ -1185,9 +1144,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
      "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
     },
     "Timeout": 900,
@@ -1329,17 +1286,7 @@
       }
      ]
     },
-    "BucketName": {
-     "Fn::Join": [
-      "",
-      [
-       "era-transcripts-dev-",
-       {
-        "Ref": "AWS::AccountId"
-       }
-      ]
-     ]
-    },
+    "BucketName": "era-transcripts-dev-946849521533",
     "LoggingConfiguration": {
      "DestinationBucketName": {
       "Ref": "AccessLogs8B620ECA"
@@ -1498,17 +1445,7 @@
       }
      ]
     },
-    "BucketName": {
-     "Fn::Join": [
-      "",
-      [
-       "era-reports-dev-",
-       {
-        "Ref": "AWS::AccountId"
-       }
-      ]
-     ]
-    },
+    "BucketName": "era-reports-dev-946849521533",
     "LoggingConfiguration": {
      "DestinationBucketName": {
       "Ref": "AccessLogs8B620ECA"
@@ -1651,7 +1588,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Qu27DMAz8luyKGrgduuYBFEWHBnH2gpZZR40lBSSVIBD074XtPBug0x2PJx3JQhcvr3oyggOPTb0dt7bSqRQwWwUH/kpbxzp94FHNv30H09YCd0VPskJT6FSiiWTl+EYh7rrm/8K7bwiZs2I0hMIOPDRI/T+EcvJ3bIA1UIMyFQGzcehvDA+dVRAQG3xpNljHFjvrg7ZCDpEMLkNrTb/ZvZIV1axTGSuPcllhMbsVFiBQAeO7ZwFvcHCcq6wsOJ1W4TxBi+qadk7BFlisAbNBnbqd7gOXQOBQkC7KvLPO28iClFV99OBCXem0hmoI6klWYYeeEchsGGlvDeq0CA6s76fsWVb8rNMsmu1w8BMb4DrqbZ3z5XJqHlmCu5bXE/5pLSnsbY00A0Y1ZUYpBRrrm+7NZ5RdlKx8qFH/8NO+KHQx0ZPRD1s7pujFOtSrAX8BhnWVI6oCAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Qy24CMQz8Fu4hRdseeuUhVaiHIpZ75c26S2CTINsBoSj/Xu1uebRIPc14PMnYLnTx8qonIzjx2NT7cWsrnUoBs1dw4s+0d6zTO57V/Mt3MG0tcFf0JCs0hU4lmkhWzm8U4qFr/i8sfUPInBWjIRR24KFB6v8hlB9/xwbYADUoUxEwW4f+zvDQWQcBscGXZot1bLGzPmhr5BDJ4Cq01vSb/Vayopp1KmPlUa4rLGb3wgIEKmBcehbwBgfHpcrKgtNpHS4TtKhuaZcUbIHFGjBb1Knb6XfgCggcCtJVmXfWeRtZkLKqzx5cqCudNlANQT3JKhzQMwKZLSMdrUGdFsGB9f2UPcuKn3WaRbMfDv7DBriNel/nfL2cmkeW4G7l7YR/WisKR1sjzYBRTZlRSoHG+qZ78xHlECUrH2rUO346FoUuCj0Z7djaMUUv1qFeD/gNibmu+qoCAAA="
    },
    "Metadata": {
     "aws:cdk:path": "EraData-dev/CDKMetadata/Default"

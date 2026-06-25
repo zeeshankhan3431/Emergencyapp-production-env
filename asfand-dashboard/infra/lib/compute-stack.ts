@@ -28,20 +28,13 @@ import type { EnvironmentContext } from './env-config';
 
 const NODE_RUNTIME = lambda.Runtime.NODEJS_20_X;
 const ARM = lambda.Architecture.ARM_64;
+const LAMBDA_CODE = lambda.Code.fromAsset('../server');
 
-/** Minimal stub — replace with real handlers from the application repo. */
-const LAMBDA_STUB = `
-exports.handler = async (event) => {
-  console.log(JSON.stringify({ fn: process.env.AWS_LAMBDA_FUNCTION_NAME, sample: JSON.stringify(event).slice(0, 800) }));
-  return {};
-};
-`;
-
-const HTTP_STUB = `
+const HTTP_HEALTH = `
 exports.handler = async () => ({
   statusCode: 200,
   headers: { 'content-type': 'application/json' },
-  body: JSON.stringify({ ok: true }),
+  body: JSON.stringify({ ok: true, service: 'era-health' }),
 });
 `;
 
@@ -113,11 +106,10 @@ export class ComputeStack extends cdk.Stack {
 
     const logRetention = logs.RetentionDays.THREE_MONTHS;
 
-    const commonLambdaProps: Omit<lambda.FunctionProps, 'timeout' | 'memorySize' | 'functionName'> = {
+    const commonLambdaProps: Omit<lambda.FunctionProps, 'timeout' | 'memorySize' | 'functionName' | 'handler'> = {
       runtime: NODE_RUNTIME,
       architecture: ARM,
-      handler: 'index.handler',
-      code: lambda.Code.fromInline(LAMBDA_STUB),
+      code: LAMBDA_CODE,
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
       securityGroups: [lambdaSecurityGroup],
@@ -176,7 +168,7 @@ export class ComputeStack extends cdk.Stack {
     this.userPoolClient = this.userPool.addClient('WebClient', {
       userPoolClientName: `era-app-client-${deployEnv}`,
       generateSecret: false,
-      authFlows: { userSrp: true },
+      authFlows: { userSrp: true, userPassword: true },
     });
 
     const issuer = `https://cognito-idp.${this.region}.amazonaws.com/${this.userPool.userPoolId}`;
@@ -194,9 +186,12 @@ export class ComputeStack extends cdk.Stack {
       displayName: `ERA Push ${deployEnv}`,
     });
 
+    // SSM /era/ai/* parameters are pre-provisioned (scripts/setup-aws-ssm.sh).
+    // Lambdas read them at runtime; IAM grants ssm:GetParameter below.
+
     const mkFn = (
       name: string,
-      overrides: Partial<lambda.FunctionProps> & Pick<lambda.FunctionProps, 'functionName' | 'memorySize' | 'timeout'>
+      overrides: Partial<lambda.FunctionProps> & Pick<lambda.FunctionProps, 'functionName' | 'memorySize' | 'timeout' | 'handler'>
     ): lambda.Function => {
       const f = new lambda.Function(this, name, {
         ...commonLambdaProps,
@@ -208,6 +203,12 @@ export class ComputeStack extends cdk.Stack {
       transcriptsBucket.grantReadWrite(f);
       reportsBucket.grantReadWrite(f);
       openSearchDomain.grantReadWrite(f);
+      f.addToRolePolicy(
+        new iam.PolicyStatement({
+          actions: ['ssm:GetParameter', 'ssm:GetParameters'],
+          resources: [`arn:aws:ssm:${this.region}:${this.account}:parameter/era/ai/*`],
+        })
+      );
       f.addToRolePolicy(
         new iam.PolicyStatement({
           actions: [
@@ -233,6 +234,7 @@ export class ComputeStack extends cdk.Stack {
     // ── Lambdas ─────────────────────────────────────────────────────────────
     this.realtimeThreatClassifier = mkFn('RealtimeThreatClassifierFn', {
       functionName: `realtime-threat-classifier-${deployEnv}`,
+      handler: 'src/lambda/realtimeThreatClassifier.handler',
       memorySize: 512,
       timeout: cdk.Duration.seconds(10),
     });
@@ -245,6 +247,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.evidenceProcessor = mkFn('EvidenceProcessorFn', {
       functionName: `evidence-processor-${deployEnv}`,
+      handler: 'src/lambda/evidenceProcessor.handler',
       memorySize: 256,
       timeout: cdk.Duration.seconds(30),
     });
@@ -260,6 +263,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.audioTranscriptionWorker = mkFn('AudioTranscriptionWorkerFn', {
       functionName: `audio-transcription-worker-${deployEnv}`,
+      handler: 'src/lambda/audioTranscriptionWorker.handler',
       memorySize: 1024,
       timeout: cdk.Duration.minutes(15),
       environment: { TRANSCRIPTION_QUEUE_URL: this.transcriptionQueue.queueUrl },
@@ -271,6 +275,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.incidentSummariser = mkFn('IncidentSummariserFn', {
       functionName: `incident-summariser-${deployEnv}`,
+      handler: 'src/lambda/incidentSummariser.handler',
       memorySize: 512,
       timeout: cdk.Duration.seconds(60),
       environment: { SUMMARISATION_QUEUE_URL: this.summarisationQueue.queueUrl },
@@ -282,6 +287,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.incidentEscalationHandler = mkFn('IncidentEscalationHandlerFn', {
       functionName: `incident-escalation-handler-${deployEnv}`,
+      handler: 'src/lambda/incidentEscalationHandler.handler',
       memorySize: 512,
       timeout: cdk.Duration.seconds(10),
     });
@@ -294,6 +300,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.smsDispatcher = mkFn('SmsDispatcherFn', {
       functionName: `sms-dispatcher-${deployEnv}`,
+      handler: 'src/lambda/smsDispatcher.handler',
       memorySize: 128,
       timeout: cdk.Duration.seconds(10),
     });
@@ -301,6 +308,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.pushDispatcher = mkFn('PushDispatcherFn', {
       functionName: `push-dispatcher-${deployEnv}`,
+      handler: 'src/lambda/pushDispatcher.handler',
       memorySize: 128,
       timeout: cdk.Duration.seconds(10),
     });
@@ -308,6 +316,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.monthlyReportGenerator = mkFn('MonthlyReportGeneratorFn', {
       functionName: `monthly-report-generator-${deployEnv}`,
+      handler: 'src/lambda/monthlyReportGenerator.handler',
       memorySize: 1024,
       timeout: cdk.Duration.minutes(5),
     });
@@ -315,13 +324,11 @@ export class ComputeStack extends cdk.Stack {
     this.healthCheckFn = new lambda.Function(this, 'HealthCheckFn', {
       ...commonLambdaProps,
       functionName: `era-health-${deployEnv}`,
+      handler: 'index.handler',
       memorySize: 128,
       timeout: cdk.Duration.seconds(5),
-      code: lambda.Code.fromInline(HTTP_STUB),
-      handler: 'index.handler',
+      code: lambda.Code.fromInline(HTTP_HEALTH),
       environment: baseEnv,
-      tracing: lambda.Tracing.ACTIVE,
-      logRetention,
     });
     this.observedLambdas.push({
       fn: this.healthCheckFn,
@@ -340,9 +347,10 @@ export class ComputeStack extends cdk.Stack {
       apiName: `era-http-${deployEnv}`,
       description: 'Emergency response HTTP API',
       corsPreflight: {
-        allowHeaders: ['*'],
+        allowHeaders: ['Authorization', 'Content-Type', 'Cookie', 'X-Registration-Secret'],
         allowMethods: [apigwv2.CorsHttpMethod.ANY],
-        allowOrigins: ['*'],
+        allowOrigins: ['https://d3kj7wc3d0h4x7.cloudfront.net'],
+        allowCredentials: true,
       },
     });
 
@@ -358,9 +366,6 @@ export class ComputeStack extends cdk.Stack {
       integration: new apigwv2Integrations.HttpLambdaIntegration('MonthlyReport', this.monthlyReportGenerator),
       authorizer: jwtAuthorizer,
     });
-
-    const cfnStage = this.httpApi.defaultStage?.node.defaultChild as apigwv2.CfnStage | undefined;
-    cfnStage?.addPropertyOverride('TracingEnabled', true);
 
     // ── SageMaker (optional real-time endpoints) ───────────────────────────
     const smRole = new iam.Role(this, 'SageMakerExecRole', {

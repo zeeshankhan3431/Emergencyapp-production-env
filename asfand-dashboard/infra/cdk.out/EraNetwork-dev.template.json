@@ -21,14 +21,7 @@
   "EraVpcpublicSubnet1SubnetAEB0216E": {
    "Type": "AWS::EC2::Subnet",
    "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      0,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
+    "AvailabilityZone": "us-east-1a",
     "CidrBlock": "10.0.0.0/24",
     "MapPublicIpOnLaunch": true,
     "Tags": [
@@ -147,14 +140,7 @@
   "EraVpcpublicSubnet2Subnet427ECD89": {
    "Type": "AWS::EC2::Subnet",
    "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      1,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
+    "AvailabilityZone": "us-east-1b",
     "CidrBlock": "10.0.1.0/24",
     "MapPublicIpOnLaunch": true,
     "Tags": [
@@ -273,14 +259,7 @@
   "EraVpcprivateSubnet1SubnetD079BA01": {
    "Type": "AWS::EC2::Subnet",
    "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      0,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
+    "AvailabilityZone": "us-east-1a",
     "CidrBlock": "10.0.2.0/24",
     "MapPublicIpOnLaunch": false,
     "Tags": [
@@ -354,14 +333,7 @@
   "EraVpcprivateSubnet2Subnet77EC42BD": {
    "Type": "AWS::EC2::Subnet",
    "Properties": {
-    "AvailabilityZone": {
-     "Fn::Select": [
-      1,
-      {
-       "Fn::GetAZs": ""
-      }
-     ]
-    },
+    "AvailabilityZone": "us-east-1b",
     "CidrBlock": "10.0.3.0/24",
     "MapPublicIpOnLaunch": false,
     "Tags": [
@@ -639,7 +611,7 @@
   "RdsSgfromEraNetworkdevLambdaSg330BBC865432CE78229A": {
    "Type": "AWS::EC2::SecurityGroupIngress",
    "Properties": {
-    "Description": "Postgres from Lambda only",
+    "Description": "Postgres from Lambda",
     "FromPort": 5432,
     "GroupId": {
      "Fn::GetAtt": [
@@ -663,7 +635,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/32OsWrDQBBEv8X96SKOFGmNMUZNIqSgNqxWm2RteU/c7VkY438PsoXUpZqZxzCMs+71zeYbGGOG3SnrubW3WgFPBsb4RejsrRnQ7L6lKXemTG3PWKdWSCe2usonpU9oe1r5yrYxemRQ9rKUJ7MvykneQQ+gNMLVlIEvoLQOF6IUhJbC88mctqqAv2cSNTNpBtxLN3gWnatLrAlTYL0egk/D4+W/oJCfQDHeTUXRp4CPwx9Jh6R3I74je4wvF+esy22+OUbmLCRRPpOtnvoHR7Lc9F0BAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/32OQWvCQBCFf4v3zVaWHryKiOTShkRyLZPJtB2Ns2F31iDify/RkNx6eu99PB7PWfe+sesVDDHD9px13Nh7pYBnA0P8InT2Xvdodt9SFztTpKZjrFIjpCNbXOmT0hGajha+sG2MHhmUvczl0ezzYpQP0AMoDXAzReArKC3DuSgFobnwejKlrSrg74VEzUTqHvfS9p5Fp+ocK8IUWG+H4FP/fPkvyOUnUIwPU1L0KeDz8GfSPunDiG/JnuLb1TnrnF2vTpE5C0mUL2TLl/4BSH7nLV0BAAA="
    },
    "Metadata": {
     "aws:cdk:path": "EraNetwork-dev/CDKMetadata/Default"
@@ -755,6 +727,22 @@
    },
    "Export": {
     "Name": "EraNetwork-dev:ExportsOutputFnGetAttElastiCacheSg3DA9FF1DGroupId0AE1DF35"
+   }
+  },
+  "ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C": {
+   "Value": {
+    "Ref": "EraVpcpublicSubnet1SubnetAEB0216E"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C"
+   }
+  },
+  "ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53": {
+   "Value": {
+    "Ref": "EraVpcpublicSubnet2Subnet427ECD89"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53"
    }
   }
  },

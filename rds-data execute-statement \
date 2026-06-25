@@ -1,0 +1,12 @@
+----------------------------------------------------------------------------------------------------------------
+|                                                DescribeStacks                                                |
++------------------------------------+-------------------------------------------------------------------------+
+|              OutputKey             |                               OutputValue                               |
++------------------------------------+-------------------------------------------------------------------------+
+|  [1m[34mApiServiceServiceURL2EB28DB2[0m      |  [1m[34mhttp://EraHos-ApiSe-h3NbSO1k5zUV-42097033.us-east-1.elb.amazonaws.com[0m  |
+|  [1m[34mDashboardBucketName[0m               |  [1m[34mera-dashboard-dev-946849521533[0m                                         |
+|  [1m[34mDashboardDistributionId[0m           |  [1m[34mE3OSNUENU6MI9A[0m                                                         |
+|  [1m[34mApiServiceLoadBalancerDNSBF9EB7FC[0m |  [1m[34mEraHos-ApiSe-h3NbSO1k5zUV-42097033.us-east-1.elb.amazonaws.com[0m         |
+|  [1m[34mApiLoadBalancerUrl[0m                |  [1m[34mhttp://EraHos-ApiSe-h3NbSO1k5zUV-42097033.us-east-1.elb.amazonaws.com[0m  |
+|  [1m[34mDashboardCloudFrontUrl[0m            |  [1m[34mhttps://d3kj7wc3d0h4x7.cloudfront.net[0m                                  |
++------------------------------------+-------------------------------------------------------------------------+

@@ -11,6 +11,7 @@ import IncidentTypeCard from '../components/IncidentTypeCard';
 import LiveMap from '../components/LiveMap';
 import RecentIncidents from '../components/RecentIncidents';
 import { getDashboardSummary } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
 
 const ICON_BY_KEY = {
   active: HiOutlineExclamationTriangle,
@@ -55,6 +56,7 @@ const FALLBACK_METRICS = [
 ];
 
 export default function Dashboard() {
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [metrics, setMetrics] = useState(FALLBACK_METRICS);
@@ -63,9 +65,11 @@ export default function Dashboard() {
   const [typeBreakdown, setTypeBreakdown] = useState(null);
 
   useEffect(() => {
+    if (authLoading || !user) return;
+
     let cancelled = false;
-    (async () => {
-      setLoading(true);
+    let fetchTimer;
+    const fetchDashboard = async (isBackground = false) => {
       setError('');
       try {
         const data = await getDashboardSummary();
@@ -80,20 +84,48 @@ export default function Dashboard() {
         setTypeBreakdown(data.incidentTypeBreakdown ?? null);
       } catch (e) {
         if (!cancelled) {
-          setError('Showing offline demo data (start the API: npm run dev:api).');
+          const apiMsg = e?.data?.message || e?.message || 'Unknown error';
+          setError(`Dashboard API failed (${apiMsg}). Check API_URL and authentication.`);
           setMetrics(FALLBACK_METRICS);
           setRecentIncidents(null);
           setChartData(null);
           setTypeBreakdown(null);
         }
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled && !isBackground) setLoading(false);
       }
-    })();
+    };
+
+    fetchDashboard();
+    fetchTimer = setInterval(() => fetchDashboard(true), 5000);
+
     return () => {
       cancelled = true;
+      if (fetchTimer) clearInterval(fetchTimer);
     };
-  }, []);
+  }, [user, authLoading]);
+
+  if (authLoading) {
+    return (
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="p-8 space-y-6">
+          <div className="text-sm text-gray-500">Loading dashboard…</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="p-8 space-y-6">
+          <div className="rounded-lg border border-amber-200 bg-amber-50 text-amber-900 text-sm px-4 py-3">
+            Please log in to view the dashboard.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col min-h-0">

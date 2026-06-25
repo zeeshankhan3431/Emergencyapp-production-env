@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "npx tsc",
-    "synth": "cdk synth",
-    "deploy": "cdk deploy --all",
-    "diff":   "cdk diff"
+    "build": "node ./node_modules/typescript/lib/tsc.js -p tsconfig.json",
+    "synth": "npm run build && node ./node_modules/aws-cdk/bin/cdk synth",
+    "deploy": "npm run build && node ./node_modules/aws-cdk/bin/cdk deploy --all --require-approval never",
+    "diff": "npm run build && node ./node_modules/aws-cdk/bin/cdk diff",
+    "bootstrap": "node ./node_modules/aws-cdk/bin/cdk bootstrap --verbose",
+    "fix-bin-perms": "chmod +x node_modules/.bin/* node_modules/typescript/bin/* 2>/dev/null || true"
   },
   "dependencies": {
     "aws-cdk-lib": "^2.187.0",

@@ -12,9 +12,6 @@ import { useEmergency } from '../context/EmergencyContext';
 import { iosMotionService } from '../services/IOSMotionService';
 import { emergencyService } from '../services/EmergencyService';
 
-// TODO: Replace with real user ID from authentication (e.g. Firebase Auth uid)
-const PLACEHOLDER_USER_ID = 'user-001';
-
 export function useEmergencyFlow() {
   const nav = useNavigation<any>();
   const {
@@ -69,8 +66,8 @@ export function useEmergencyFlow() {
     if (escalatingRef.current) return;
     escalatingRef.current = true;
     try {
+      // userId is no longer sent to backend — backend derives it from JWT auth
       const sessionId = await emergencyService.escalate(
-        PLACEHOLDER_USER_ID,
         state.scenarioMessage,
         state.impactTimestamp ?? Date.now(),
       );

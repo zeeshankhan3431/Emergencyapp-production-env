@@ -29,6 +29,65 @@ router.get('/stats', requireAdmin, async (_req, res) => {
 });
 
 /**
+ * GET /api/dashboard/summary — Admin or Analyst
+ * Combines stats and recent incidents, formats them to match what the frontend Dashboard.jsx expects.
+ */
+router.get('/summary', requireAdminOrAnalyst, async (_req, res) => {
+  const stats = await getDashboardStats();
+  const { items: recentIncidents } = await listDashboardIncidents({ limit: 5 });
+
+  // Format the metrics array as expected by frontend FALLBACK_METRICS
+  const metrics = [
+    {
+      key: 'active',
+      title: 'Active Incidents',
+      value: String(stats.active_incidents),
+      change: '0%', // Mocking change for now until historical comparison is built
+      changePositive: true,
+    },
+    {
+      key: 'today',
+      title: "Today's Escalations",
+      value: String(stats.escalated_today),
+      change: '0%',
+      changePositive: true,
+    },
+    {
+      key: 'resolved',
+      title: 'Resolved Cases',
+      value: String(stats.resolved_today),
+      change: '0%',
+      changePositive: true,
+    },
+    {
+      key: 'avgResponse',
+      title: 'Avg Response Time',
+      value: stats.avg_response_time_seconds 
+               ? `${Math.floor(stats.avg_response_time_seconds / 60)}m ${Math.floor(stats.avg_response_time_seconds % 60)}s`
+               : 'N/A',
+      change: '0%',
+      changePositive: true,
+    },
+  ];
+
+  // For the chart, we can dummy it or build a quick 24-hr aggregate from DB.
+  // For now we'll pass null or an empty array so frontend doesn't crash.
+  
+  // Incident Type Breakdown for Pie Chart
+  const incidentTypeBreakdown = stats.top_incident_types.map(t => ({
+    name: t.type,
+    value: t.count
+  }));
+
+  return res.json({
+    metrics,
+    recentIncidents,
+    incidentsOverTime: [], // You can add actual time series aggregation in dashboardService if needed
+    incidentTypeBreakdown
+  });
+});
+
+/**
  * GET /api/dashboard/incidents — Admin only
  * Query: status, type, date_from, date_to, responder_id, page, limit
  */

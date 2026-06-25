@@ -1,1 +1,0 @@
-/home/zeeshan/emergency-response-system/mobile/android/app/build/intermediates/cxx/Debug/s6w3t1p3/obj/x86_64

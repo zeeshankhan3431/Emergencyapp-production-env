@@ -11,27 +11,33 @@ export default function Analytics() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const data = await getDashboardSummary();
-        if (!cancelled) {
-          setChartData(data.incidentsOverTime ?? null);
-          setTypeBreakdown(data.incidentTypeBreakdown ?? null);
+      let fetchTimer;
+      const fetchAnalytics = async (isBackground = false) => {
+        if (!isBackground) setLoading(true);
+        setError('');
+        try {
+          const data = await getDashboardSummary();
+          if (!cancelled) {
+            setChartData(data.incidentsOverTime ?? null);
+            setTypeBreakdown(data.incidentTypeBreakdown ?? null);
+          }
+        } catch (e) {
+          if (!cancelled) {
+            setError(e.data?.message || e.message || 'Could not load analytics. Is the API running?');
+            setChartData(null);
+            setTypeBreakdown(null);
+          }
+        } finally {
+          if (!cancelled && !isBackground) setLoading(false);
         }
-      } catch (e) {
-        if (!cancelled) {
-          setError(e.data?.message || e.message || 'Could not load analytics. Is the API running?');
-          setChartData(null);
-          setTypeBreakdown(null);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+      };
+
+      fetchAnalytics();
+      fetchTimer = setInterval(() => fetchAnalytics(true), 5000);
+
     return () => {
       cancelled = true;
+      if (fetchTimer) clearInterval(fetchTimer);
     };
   }, []);
 

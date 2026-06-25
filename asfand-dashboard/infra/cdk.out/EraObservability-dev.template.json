@@ -1063,7 +1063,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KywrCMBBFv6X7dCzBhVvRvWC7l0lS6fSRlExiFyH/LiEgru45hytBni/QNXhwq83SrqQg9QH1IvDgV2LLkAa3kxa3t63QR8Xa0x7I2VL/PQu9umgODHqCdF3Rb+VS4Y48KYfelPSTnIs+YthjyMI6M8LMp4+UIDvompmJWh9toG2EZ90vz8DGQLYAAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KywrCMBBFv6X7dCzBhVvRvWC7l0lS6fSRlExiFyH/LiEgru45hytBni/QNXhwq83SrqQg9QH1IvDgV2LLkAa3kxa3t63QR8Xa0x7I2VL/PQu9umgODHqCdF3Rb+VS4Y48KYfelPSTnIs+YthjyMI6M8LMp4+UICV0zcxErY820DbCs+4XwAz9mbYAAAA="
    },
    "Metadata": {
     "aws:cdk:path": "EraObservability-dev/CDKMetadata/Default"

@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { login as apiLogin, logout as apiLogout, fetchCurrentUser, getAccessToken, setAccessToken } from '../lib/api';
 
 const AUTH_KEY = 'ers_admin_auth';
 
@@ -24,34 +25,107 @@ function setStoredUser(user) {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setUser(getStoredUser());
-  }, []);
-
-  const login = (email, password) => {
-    // Demo: accept admin@example.com / admin123 (or admin / admin123)
-    const isAdmin =
-      (email === 'admin@example.com' && password === 'admin123') ||
-      (email === 'admin' && password === 'admin123');
-    if (!isAdmin) return false;
-    const userData = {
-      name: 'Alex Morgan',
-      email: email === 'admin' ? 'admin@example.com' : email,
-      role: 'Admin',
-    };
+  const applyUser = useCallback((userData) => {
     setUser(userData);
     setStoredUser(userData);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function restore() {
+      const stored = getStoredUser();
+      const token = getAccessToken();
+
+      if (!token && !stored) {
+        if (!cancelled) setLoading(false);
+        return;
+      }
+
+      if (token) {
+        try {
+          const { user: me } = await fetchCurrentUser();
+          if (!cancelled) {
+            applyUser({
+              id: me.id,
+              name: me.fullName || me.email,
+              email: me.email,
+              role: me.role,
+            });
+          }
+        } catch {
+          // Token might be expired — try refresh via /auth/refresh
+          try {
+            const refreshed = await fetch('/api/auth/refresh', {
+              method: 'POST',
+              credentials: 'include',
+            });
+            if (refreshed.ok) {
+              const data = await refreshed.json();
+              if (data.accessToken) {
+                setAccessToken(data.accessToken);
+                const { user: me } = await fetchCurrentUser();
+                if (!cancelled && me) {
+                  applyUser({
+                    id: me.id,
+                    name: me.fullName || me.email,
+                    email: me.email,
+                    role: me.role,
+                  });
+                } else if (!cancelled) {
+                  setAccessToken(null);
+                  setUser(null);
+                  setStoredUser(null);
+                }
+              } else {
+                setAccessToken(null);
+                setUser(null);
+                setStoredUser(null);
+              }
+            } else {
+              setAccessToken(null);
+              setUser(null);
+              setStoredUser(null);
+            }
+          } catch {
+            setAccessToken(null);
+            setUser(null);
+            setStoredUser(null);
+          }
+        }
+      } else if (stored) {
+        if (!cancelled) setUser(stored);
+      }
+
+      if (!cancelled) setLoading(false);
+    }
+
+    restore();
+    return () => { cancelled = true; };
+  }, [applyUser]);
+
+  const login = async (email, password) => {
+    const data = await apiLogin(email, password);
+    const u = data.user;
+    applyUser({
+      id: u.id,
+      name: u.fullName || u.email,
+      email: u.email,
+      role: u.role,
+    });
     return true;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await apiLogout();
     setUser(null);
     setStoredUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

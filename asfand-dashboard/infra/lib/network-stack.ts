@@ -75,7 +75,7 @@ export class NetworkStack extends cdk.Stack {
     this.rdsSecurityGroup.addIngressRule(
       this.lambdaSecurityGroup,
       ec2.Port.tcp(5432),
-      'Postgres from Lambda only'
+      'Postgres from Lambda'
     );
 
     new cdk.CfnOutput(this, 'VpcId', { value: this.vpc.vpcId });

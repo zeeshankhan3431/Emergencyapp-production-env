@@ -1,4 +1,0 @@
-/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/Debug/s6w3t1p3/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/foo.dir
-/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/Debug/s6w3t1p3/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/boo.dir
-/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/Debug/s6w3t1p3/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/edit_cache.dir
-/home/zeeshan/emergency-response-system/mobile/android/app/.cxx/Debug/s6w3t1p3/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/rebuild_cache.dir

@@ -125,6 +125,18 @@
       "data": "ExportsOutputFnGetAttElastiCacheSg3DA9FF1DGroupId0AE1DF35"
     }
   ],
+  "/EraNetwork-dev/Exports/Output{\"Ref\":\"EraVpcpublicSubnet1SubnetAEB0216E\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C"
+    }
+  ],
+  "/EraNetwork-dev/Exports/Output{\"Ref\":\"EraVpcpublicSubnet2Subnet427ECD89\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53"
+    }
+  ],
   "/EraNetwork-dev/EraVpc/publicSubnet1/Subnet": [
     {
       "type": "aws:cdk:logicalId",

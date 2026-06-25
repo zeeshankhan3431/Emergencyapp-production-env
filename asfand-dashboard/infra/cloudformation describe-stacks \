@@ -1,0 +1,39 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:946849521533:stack/EraHosting-dev/5e723660-6a4f-11f1-83d0-0ef01ef103c3",
+            "StackName": "EraHosting-dev",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:946849521533:changeSet/cdk-deploy-change-set/2f4d7817-705f-4134-b289-27a222e99968",
+            "Parameters": [
+                {
+                    "ParameterKey": "BootstrapVersion",
+                    "ParameterValue": "/cdk-bootstrap/hnb659fds/version",
+                    "ResolvedValue": "31"
+                }
+            ],
+            "CreationTime": "2026-06-17T13:20:54.850000+00:00",
+            "LastUpdatedTime": "2026-06-17T13:40:41.794000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_IN_PROGRESS",
+            "DisableRollback": false,
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_IAM",
+                "CAPABILITY_NAMED_IAM",
+                "CAPABILITY_AUTO_EXPAND"
+            ],
+            "RoleARN": "arn:aws:iam::946849521533:role/cdk-hnb659fds-cfn-exec-role-946849521533-us-east-1",
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "CREATE_STACK",
+                    "OperationId": "a1cdacab-529d-4626-9221-47c23b10102f"
+                }
+            ]
+        }
+    ]
+}

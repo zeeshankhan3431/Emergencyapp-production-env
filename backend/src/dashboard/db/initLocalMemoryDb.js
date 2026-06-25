@@ -81,7 +81,10 @@ export async function initLocalDatabaseIfNeeded() {
     const sql = readFileSync(join(testDir, file), 'utf8');
     await pool.query(sql);
   }
-  await pool.query(SEED_SQL);
+  // Only seed data in development/staging, never in production
+  if (process.env.NODE_ENV !== 'production') {
+    await pool.query(SEED_SQL);
+  }
 
   setPool(pool);
   process.env.__ERA_MEMORY_DB = 'true';

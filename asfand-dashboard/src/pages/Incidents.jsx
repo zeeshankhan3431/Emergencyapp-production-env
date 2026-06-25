@@ -33,26 +33,32 @@ export default function Incidents() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      setLoading(true);
-      setError('');
-      const p = {};
-      if (status) p.status = status;
-      if (q.trim()) p.q = q.trim();
-      try {
-        const data = await getIncidents(p);
-        if (!cancelled) setItems(data.items ?? []);
-      } catch (e) {
-        if (!cancelled) {
-          setError(e.data?.message || e.message || 'Could not load incidents. Is the API running?');
-          setItems([]);
+      let fetchTimer;
+      const fetchIncidents = async (isBackground = false) => {
+        if (!isBackground) setLoading(true);
+        setError('');
+        const p = {};
+        if (status) p.status = status;
+        if (q.trim()) p.q = q.trim();
+        try {
+          const data = await getIncidents(p);
+          if (!cancelled) setItems(data.items ?? []);
+        } catch (e) {
+          if (!cancelled) {
+            setError(e.data?.message || e.message || 'Could not load incidents. Is the API running?');
+            setItems([]);
+          }
+        } finally {
+          if (!cancelled && !isBackground) setLoading(false);
         }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
+      };
+
+      fetchIncidents();
+      fetchTimer = setInterval(() => fetchIncidents(true), 5000);
+
     return () => {
       cancelled = true;
+      if (fetchTimer) clearInterval(fetchTimer);
     };
   }, [status, q]);
 
