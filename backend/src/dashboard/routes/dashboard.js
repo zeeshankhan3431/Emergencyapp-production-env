@@ -1,5 +1,18 @@
 import { Router } from 'express';
-import { getDashboardStats, listDashboardIncidents, listAnonymisedMapPoints } from '../services/dashboardService.js';
+import { getDashboardStats, listDashboardIncidents, listAnonymisedMapPoints, getIncidentsOverTime } from '../services/dashboardService.js';
+
+const TYPE_COLORS = {
+  fire:         'bg-red-500',
+  medical:      'bg-orange-500',
+  traffic:      'bg-blue-500',
+  public_order: 'bg-purple-500',
+};
+const TYPE_LABELS = {
+  fire:         'Fire',
+  medical:      'Medical',
+  traffic:      'Traffic',
+  public_order: 'Public Order',
+};
 
 const router = Router();
 
@@ -33,59 +46,80 @@ router.get('/stats', requireAdmin, async (_req, res) => {
  * Combines stats and recent incidents, formats them to match what the frontend Dashboard.jsx expects.
  */
 router.get('/summary', requireAdminOrAnalyst, async (_req, res) => {
-  const stats = await getDashboardStats();
-  const { items: recentIncidents } = await listDashboardIncidents({ limit: 5 });
+  const [stats, { items: rawIncidents }, incidentsOverTime] = await Promise.all([
+    getDashboardStats(),
+    listDashboardIncidents({ limit: 5 }),
+    getIncidentsOverTime(),
+  ]);
 
-  // Format the metrics array as expected by frontend FALLBACK_METRICS
+  // Format the metrics array as expected by frontend
   const metrics = [
     {
       key: 'active',
       title: 'Active Incidents',
       value: String(stats.active_incidents),
-      change: '0%', // Mocking change for now until historical comparison is built
+      change: '',
       changePositive: true,
     },
     {
       key: 'today',
       title: "Today's Escalations",
       value: String(stats.escalated_today),
-      change: '0%',
+      change: '',
       changePositive: true,
     },
     {
       key: 'resolved',
       title: 'Resolved Cases',
       value: String(stats.resolved_today),
-      change: '0%',
+      change: '',
       changePositive: true,
     },
     {
       key: 'avgResponse',
       title: 'Avg Response Time',
-      value: stats.avg_response_time_seconds 
+      value: stats.avg_response_time_seconds
                ? `${Math.floor(stats.avg_response_time_seconds / 60)}m ${Math.floor(stats.avg_response_time_seconds % 60)}s`
-               : 'N/A',
-      change: '0%',
+               : '—',
+      change: '',
       changePositive: true,
     },
   ];
 
-  // For the chart, we can dummy it or build a quick 24-hr aggregate from DB.
-  // For now we'll pass null or an empty array so frontend doesn't crash.
-  
-  // Incident Type Breakdown for Pie Chart
-  const incidentTypeBreakdown = stats.top_incident_types.map(t => ({
-    name: t.type,
-    value: t.count
+  // Incident type breakdown — compute percentages and assign display colors
+  const totalTypeCount = stats.top_incident_types.reduce((s, t) => s + t.count, 0) || 1;
+  const incidentTypeBreakdown = stats.top_incident_types.map((t, i) => ({
+    label: TYPE_LABELS[t.type] ?? t.type,
+    name:  t.type,
+    value: t.count,
+    percent: Math.round((t.count / totalTypeCount) * 100),
+    color: TYPE_COLORS[t.type] ?? ['bg-teal-500', 'bg-yellow-500', 'bg-pink-500'][i % 3],
+  }));
+
+  // Map recent incidents to the shape expected by RecentIncidents.jsx
+  const recentIncidents = rawIncidents.map((r) => ({
+    id: r.id,
+    type: TYPE_LABELS[r.type] ?? r.type,
+    typeKey: r.type,
+    location: r.ai_summary ? r.ai_summary.slice(0, 60) : r.id,
+    status: r.status === 'escalated' || r.status === 'responder_assigned'
+              ? 'Dispatching'
+              : r.status === 'resolved'
+              ? 'Resolved'
+              : r.status === 'ai_processing'
+              ? 'On Scene'
+              : 'Open',
+    openedAt: r.triggered_at,
   }));
 
   return res.json({
     metrics,
     recentIncidents,
-    incidentsOverTime: [], // You can add actual time series aggregation in dashboardService if needed
-    incidentTypeBreakdown
+    incidentsOverTime,
+    incidentTypeBreakdown,
   });
 });
+
 
 /**
  * GET /api/dashboard/incidents — Admin only

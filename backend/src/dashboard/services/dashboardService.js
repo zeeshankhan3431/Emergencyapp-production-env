@@ -218,3 +218,44 @@ export async function listAnonymisedMapPoints(days = 30) {
   );
   return rows;
 }
+
+/**
+ * 24-hour incident volume — hourly buckets for the Incidents Over Time chart.
+ * Returns array of { time: string, incidents: number } for the last 24 hours.
+ */
+export async function getIncidentsOverTime() {
+  const pool = getPool();
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+  const { rows } = await pool.query(
+    `SELECT triggered_at
+     FROM incidents
+     WHERE is_deleted = FALSE
+       AND triggered_at IS NOT NULL
+       AND triggered_at >= $1
+     ORDER BY triggered_at ASC`,
+    [since]
+  );
+
+  // Build 24 hourly buckets
+  const now = new Date();
+  const buckets = {};
+  for (let h = 23; h >= 0; h--) {
+    const d = new Date(now);
+    d.setUTCMinutes(0, 0, 0);
+    d.setUTCHours(d.getUTCHours() - h);
+    const hour = d.getUTCHours();
+    const label = hour === 0 ? '12am' : hour < 12 ? `${hour}am` : hour === 12 ? '12pm' : `${hour - 12}pm`;
+    buckets[d.toISOString().slice(0, 13)] = { time: label, incidents: 0 };
+  }
+
+  for (const r of rows) {
+    const ts = r.triggered_at instanceof Date ? r.triggered_at : new Date(r.triggered_at);
+    const key = ts.toISOString().slice(0, 13);
+    if (buckets[key]) {
+      buckets[key].incidents += 1;
+    }
+  }
+
+  return Object.values(buckets);
+}

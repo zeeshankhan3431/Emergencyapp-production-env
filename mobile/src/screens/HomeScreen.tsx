@@ -56,17 +56,15 @@ const HomeScreen: React.FC = () => {
       if (!NativeModules.EmergencyModule) return;
 
       try {
-        // Safe to call here — JS is fully loaded at this point
         const result = await NativeModules.EmergencyModule.getPendingImpact();
         if (result?.impact === true) {
-          console.log('[HomeScreen] Pending impact found, magnitude:', result.magnitude);
           // Small delay to let navigation settle before triggering flow
           setTimeout(() => {
             markImpact();
           }, 300);
         }
-      } catch (err) {
-        console.warn('[HomeScreen] getPendingImpact error:', err);
+      } catch {
+        // getPendingImpact failed — safe to ignore in production
       }
     };
 
@@ -138,13 +136,13 @@ const HomeScreen: React.FC = () => {
                 ],
               );
             }
-          } catch (e) {
-            console.warn('Battery check failed:', e);
+          } catch {
+            // Battery optimization check failed — non-critical
           }
         }, 1500);
 
-      } catch (err) {
-        console.warn('[HomeScreen] Setup error:', err);
+      } catch {
+        // Setup error — non-critical
       }
     };
 
@@ -155,8 +153,7 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     if (Platform.OS === 'android' && NativeModules.EmergencyModule) {
       NativeModules.EmergencyModule.startForegroundService()
-        .then(() => console.log('[HomeScreen] Foreground service started'))
-        .catch((err: any) => console.warn('[HomeScreen] Service error:', err));
+        .catch((_err: any) => { /* Foreground service error — non-critical */ });
     }
 
     EmergencyFlowBridge.register(() => {

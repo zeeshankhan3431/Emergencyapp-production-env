@@ -59,8 +59,7 @@ class ImpactDetectionService {
   /** Start listening for impacts. Pass a callback to receive impact events. */
   start(onImpact: ImpactCallback): void {
     if (this.isRunning) {
-      console.warn('[ImpactDetection] Already running – call stop() first.');
-      return;
+      return; // already running
     }
 
     this.onImpact = onImpact;
@@ -84,8 +83,7 @@ class ImpactDetectionService {
       )
       .subscribe({
         next: ({ magnitude }) => this.handlePotentialImpact(magnitude),
-        error: err =>
-          console.error('[ImpactDetection] Accelerometer error:', err),
+        error: () => { /* accelerometer error — non-critical */ },
       });
 
     // ── Gyroscope (supplementary – catches rotational impacts) ────────────
@@ -102,15 +100,9 @@ class ImpactDetectionService {
       )
       .subscribe({
         next: magnitude => this.handlePotentialImpact(magnitude),
-        error: err => console.error('[ImpactDetection] Gyroscope error:', err),
+        error: () => { /* gyroscope error — non-critical */ },
       });
 
-    console.log(
-      `[ImpactDetection] Started on ${Platform.OS}` +
-        (Platform.OS === 'ios'
-          ? ' (foreground/recent-background only – iOS limitation)'
-          : ' (full background via Foreground Service)'),
-    );
   }
 
   /** Stop listening. Safe to call even if already stopped. */
@@ -121,7 +113,6 @@ class ImpactDetectionService {
     this.gyroSub = null;
     this.onImpact = null;
     this.isRunning = false;
-    console.log('[ImpactDetection] Stopped.');
   }
 
   get running(): boolean {
@@ -136,7 +127,6 @@ class ImpactDetectionService {
       return; // still in cooldown
     }
     this.lastImpactTime = now;
-    console.log(`[ImpactDetection] Impact detected! magnitude=${magnitude.toFixed(2)}`);
     this.onImpact?.(magnitude);
   }
 }

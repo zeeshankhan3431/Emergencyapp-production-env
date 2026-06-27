@@ -29,8 +29,7 @@ export function useEmergencyFlow() {
   // Android: sensor managed by native Kotlin foreground service
   useEffect(() => {
     if (Platform.OS === 'ios') {
-      iosMotionService.start((magnitude, type) => {
-        console.log(`[useEmergencyFlow] iOS impact: ${magnitude} (${type})`);
+      iosMotionService.start((_magnitude, _type) => {
         markImpact();
       });
 

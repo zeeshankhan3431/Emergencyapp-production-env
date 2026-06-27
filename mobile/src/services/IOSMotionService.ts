@@ -88,11 +88,6 @@ class IOSMotionService {
       'change',
       this.handleAppState,
     );
-
-    console.log(
-      '[IOSMotionService] Started — best-effort mode\n' +
-      'LIMITATION: Detection pauses when app is backgrounded (iOS policy)',
-    );
   }
 
   stop(): void {
@@ -101,7 +96,6 @@ class IOSMotionService {
     this.appStateSub = null;
     this.onImpact = null;
     this.isRunning = false;
-    console.log('[IOSMotionService] Stopped');
   }
 
   get running(): boolean {
@@ -112,10 +106,8 @@ class IOSMotionService {
 
   private handleAppState = (nextState: AppStateStatus): void => {
     if (nextState === 'active') {
-      console.log('[IOSMotionService] App foregrounded — resuming sensor');
       this.startSensor();
     } else if (nextState === 'background' || nextState === 'inactive') {
-      console.log('[IOSMotionService] App backgrounded — pausing sensor (iOS limitation)');
       this.stopSensor();
       this.resetFallState();
     }
@@ -135,7 +127,7 @@ class IOSMotionService {
       )
       .subscribe({
         next: ({ magnitude }) => this.processSample(magnitude),
-        error: err => console.error('[IOSMotionService] Sensor error:', err),
+        error: () => { /* sensor error — non-critical */ },
       });
   }
 
@@ -175,7 +167,6 @@ class IOSMotionService {
 
       if (duration >= FREE_FALL_MIN_MS) {
         this.waitingForImpact = true;
-        console.log(`[IOSMotionService] Phase 1 confirmed: ${duration}ms free fall`);
       } else {
         this.waitingForImpact = false;
       }
@@ -191,7 +182,6 @@ class IOSMotionService {
       }
 
       if (magnitude > IMPACT_THRESHOLD) {
-        console.log(`[IOSMotionService] Phase 2 confirmed: impact ${magnitude} m/s²`);
         this.lastTriggerTime = now;
         this.resetFallState();
         this.onImpact?.(magnitude, 'fall_and_impact');

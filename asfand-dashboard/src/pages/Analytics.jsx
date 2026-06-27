@@ -47,8 +47,7 @@ export default function Analytics() {
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Analytics</h1>
           <p className="text-gray-500 mt-1 text-sm">
-            Incident volume and category distribution (mock series from API — replace with AI trend reports when
-            available).
+            Incident volume and type distribution — live data from the last 30 days.
           </p>
         </div>
 

@@ -68,7 +68,7 @@ export default function Incidents() {
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Incidents</h1>
           <p className="text-gray-500 mt-1 text-sm">
-            Emergency escalations and dispatch status (PDF web slice — mock data from API).
+            All emergency incidents with real-time escalation and dispatch status.
           </p>
         </div>
 

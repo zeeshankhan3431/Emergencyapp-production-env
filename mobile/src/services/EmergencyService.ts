@@ -1,7 +1,7 @@
 /**
  * EmergencyService — unified ERA API (incidents pipeline on port 3001).
  *
- * NOTE: userId is NOT sent to thebackend anymore. The backend derives it
+ * NOTE: userId is NOT sent to the backend anymore. The backend derives it
  * from the JWT auth token (req.user.id from authenticateJWT middleware).
  * This prevents FK constraint failures from hardcoded/invalid user_id values.
  */
@@ -12,8 +12,6 @@ import { authService } from './AuthService';
 import { callService } from './CallService';
 import { contactsService } from './ContactsService';
 import { consentService } from './ConsentService';
-
-console.log('[EmergencyService] API_BASE:', API_BASE);
 
 Geolocation.setRNConfiguration({
   skipPermissionRequests: false,
@@ -110,12 +108,8 @@ class EmergencyService {
         try {
           await NativeModules.EmergencyModule.sendEmergencySms(contact.phone, alertMessage);
           sent += 1;
-        } catch (err: any) {
+        } catch {
           failed += 1;
-          console.warn(
-            `[EmergencyService] SMS failed for ${contact.phone}:`,
-            err?.message ?? 'unknown error',
-          );
         }
       }),
     );
@@ -149,25 +143,18 @@ class EmergencyService {
     const location = payload.location ?? (await this.getCurrentLocation());
     const type = inferIncidentType(payload.scenarioMessage);
 
-    console.log('[EmergencyService] __DEV__:', __DEV__);
-    console.log('[EmergencyService] API_BASE:', API_BASE);
-    console.log('[EmergencyService] Creating incident with type:', type, 'location:', location);
-
     const attemptIncidentCreate = async (headers: Record<string, string>): Promise<{ ok: boolean; incidentId?: string; status?: number }> => {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
         const url = `${API_BASE}/incidents`;
-        console.log('[EmergencyService] Fetching URL:', url);
-        console.log('[EmergencyService] Request headers:', headers);
         const requestBody = {
           type,
           lat: location?.lat ?? 0,
           lng: location?.lng ?? 0,
           device_id: Platform.OS,
         };
-        console.log('[EmergencyService] Request body:', requestBody);
-        
+
         const res = await fetch(url, {
           method: 'POST',
           headers,
@@ -175,14 +162,10 @@ class EmergencyService {
           signal: controller.signal,
         });
         clearTimeout(timeoutId);
-        
-        console.log('[EmergencyService] Response status:', res.status);
+
         const data = await res.json();
-        console.log('[EmergencyService] Response data:', data);
         return { ok: res.ok, incidentId: data.incident_id, status: res.status };
-      } catch (err: any) {
-        console.error('[EmergencyService] createSession request failed:', err?.message ?? err);
-        console.error('[EmergencyService] Error details:', JSON.stringify(err));
+      } catch {
         return { ok: false, status: 0 };
       }
     };
@@ -193,7 +176,6 @@ class EmergencyService {
 
       // Retry once with fresh token on 401
       if (!result.ok && result.status === 401) {
-        console.log('[EmergencyService] Got 401, refreshing token and retrying...');
         const refreshed = await authService.refreshToken();
         if (refreshed) {
           const retryHeaders = await this.authHeaders();
@@ -202,13 +184,11 @@ class EmergencyService {
       }
 
       if (result.ok && result.incidentId) {
-        console.log('[EmergencyService] Incident created:', result.incidentId);
         return result.incidentId;
       }
 
       throw new Error(`HTTP ${result.status ?? 'network error'}`);
-    } catch (err: any) {
-      console.warn('[EmergencyService] createSession failed:', err?.message ?? err);
+    } catch {
       return `local-${Date.now()}`;
     }
   }
@@ -222,16 +202,13 @@ class EmergencyService {
     try {
       const headers = await this.authHeaders();
       const status = reason === 'user_cancelled' ? 'cancelled' : 'resolved';
-      const res = await fetch(`${API_BASE}/incidents/${sessionId}/status`, {
+      await fetch(`${API_BASE}/incidents/${sessionId}/status`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify({ status }),
       });
-      if (!res.ok) {
-        console.warn('[EmergencyService] resolveSession HTTP error:', res.status);
-      }
-    } catch (err: any) {
-      console.warn('[EmergencyService] resolveSession failed:', err?.message);
+    } catch {
+      // Resolve failed — non-critical
     }
   }
 
@@ -239,8 +216,6 @@ class EmergencyService {
     scenarioMessage: string,
     impactTimestamp: number,
   ): Promise<string> {
-    console.log('[EmergencyService] Escalating...');
-
     const [consent, contacts, location] = await Promise.all([
       consentService.getEvidenceConsent(),
       contactsService.getAll(),

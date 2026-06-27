@@ -28,31 +28,19 @@ class AuthService {
     password = MOBILE_SERVICE_PASSWORD,
   ): Promise<string | null> {
     try {
-      console.log('[AuthService] Attempting login to:', `${API_BASE}/auth/login`);
-      console.log('[AuthService] Email:', email);
       const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      console.log('[AuthService] Login response status:', res.status);
-      if (!res.ok) {
-        console.error('[AuthService] Login failed with status:', res.status);
-        return null;
-      }
+      if (!res.ok) return null;
       const data = await res.json();
-      console.log('[AuthService] Login response data:', data);
       const token = data.accessToken as string | undefined;
-      if (!token) {
-        console.error('[AuthService] No token in response');
-        return null;
-      }
+      if (!token) return null;
       this.token = token;
       await AsyncStorage.setItem(TOKEN_KEY, token);
-      console.log('[AuthService] Login successful, token stored');
       return token;
-    } catch (err: any) {
-      console.error('[AuthService] Login error:', err?.message ?? err);
+    } catch {
       return null;
     }
   }

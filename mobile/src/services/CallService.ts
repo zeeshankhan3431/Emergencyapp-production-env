@@ -37,13 +37,11 @@ class CallService {
     try {
       const canOpen = await Linking.canOpenURL(uri);
       if (canOpen) {
-        console.log('[CallService] Android: initiating 911 call');
         await Linking.openURL(uri);
       } else {
         this.showManualDialAlert('android');
       }
-    } catch (err) {
-      console.error('[CallService] Android call error:', err);
+    } catch {
       // Fallback: try telprompt
       try {
         await Linking.openURL(`telprompt:${EMERGENCY_NUMBER}`);
@@ -84,11 +82,9 @@ class CallService {
             style: 'destructive',
             onPress: async () => {
               try {
-                console.log('[CallService] iOS: opening tel:911 (system confirmation will appear)');
                 // Step 2: Open system dialler — iOS will show confirmation sheet
                 await Linking.openURL(`tel:${EMERGENCY_NUMBER}`);
-              } catch (err) {
-                console.error('[CallService] iOS call error:', err);
+              } catch {
                 this.showManualDialAlert('ios');
               }
               resolve();
@@ -98,7 +94,6 @@ class CallService {
             text: 'Cancel',
             style: 'cancel',
             onPress: () => {
-              console.log('[CallService] iOS: call cancelled by user');
               resolve();
             },
           },
@@ -124,9 +119,7 @@ class CallService {
           text: `Dial ${EMERGENCY_NUMBER}`,
           style: 'destructive',
           onPress: () => {
-            Linking.openURL(`tel:${EMERGENCY_NUMBER}`).catch(() => {
-              console.log('[CallService] Manual dial fallback also failed');
-            });
+            Linking.openURL(`tel:${EMERGENCY_NUMBER}`).catch(() => { /* ignore */ });
           },
         },
         { text: 'OK', style: 'cancel' },
