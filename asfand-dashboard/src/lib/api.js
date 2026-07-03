@@ -127,3 +127,13 @@ export function getIncidents(params = {}) {
   const qs = search.toString();
   return request(`/incidents${qs ? `?${qs}` : ''}`);
 }
+
+/** Dashboard anonymised map points */
+export function getMapPoints(days = 30) {
+  return request(`/dashboard/map?days=${days}`);
+}
+
+/** Incidents over time for a given range: 'today' | '7days' | '30days' */
+export function getIncidentsOverTimeRange(range = 'today') {
+  return request(`/dashboard/incidents-over-time?range=${range}`);
+}

@@ -161,6 +161,8 @@ export async function listDashboardIncidents(filters = {}) {
     `SELECT
        i.id,
        i.type,
+       i.lat,
+       i.lng,
        i.status,
        i.urgency_score,
        i.ai_summary,
@@ -180,6 +182,8 @@ export async function listDashboardIncidents(filters = {}) {
   const items = rows.map((r) => ({
     id: r.id,
     type: r.type,
+    lat: r.lat,
+    lng: r.lng,
     status: r.status,
     urgency_score: r.urgency_score,
     ai_summary: r.ai_summary,
@@ -259,3 +263,41 @@ export async function getIncidentsOverTime() {
 
   return Object.values(buckets);
 }
+
+/**
+ * Date-range aware chart data for the dropdown.
+ * @param {'today'|'7days'|'30days'} range
+ * @returns Array<{ time: string, incidents: number }>
+ */
+export async function getIncidentsOverTimeByRange(range = 'today') {
+  const pool = getPool();
+
+  if (range === '7days' || range === '30days') {
+    const days = range === '7days' ? 7 : 30;
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const { rows } = await pool.query(
+      `SELECT DATE(triggered_at AT TIME ZONE 'UTC') AS day, COUNT(*)::INT AS c
+       FROM incidents
+       WHERE is_deleted = FALSE AND triggered_at IS NOT NULL AND triggered_at >= $1
+       GROUP BY day ORDER BY day ASC`,
+      [since]
+    );
+    // Build a bucket per day
+    const buckets = {};
+    for (let d = days - 1; d >= 0; d--) {
+      const dt = new Date(Date.now() - d * 24 * 60 * 60 * 1000);
+      const key = dt.toISOString().slice(0, 10);
+      const label = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+      buckets[key] = { time: label, incidents: 0 };
+    }
+    for (const r of rows) {
+      const key = r.day instanceof Date ? r.day.toISOString().slice(0, 10) : String(r.day).slice(0, 10);
+      if (buckets[key]) buckets[key].incidents = r.c;
+    }
+    return Object.values(buckets);
+  }
+
+  // Default: today (24h hourly)
+  return getIncidentsOverTime();
+}
+

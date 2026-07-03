@@ -1,0 +1,234 @@
+{
+  "/EraHosting-prod/RdsFromEcs": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsFromEcs"
+    }
+  ],
+  "/EraHosting-prod/RedisFromEcs": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RedisFromEcs"
+    }
+  ],
+  "/EraHosting-prod/CloudFrontToAlb": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CloudFrontToAlb"
+    }
+  ],
+  "/EraHosting-prod/HttpFromCloudFront": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HttpFromCloudFront"
+    }
+  ],
+  "/EraHosting-prod/ApiLoadBalancerUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiLoadBalancerUrl"
+    }
+  ],
+  "/EraHosting-prod/DashboardBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardBucketName"
+    }
+  ],
+  "/EraHosting-prod/DashboardCloudFrontUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardCloudFrontUrl"
+    }
+  ],
+  "/EraHosting-prod/DashboardDistributionId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardDistributionId"
+    }
+  ],
+  "/EraHosting-prod/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/EraHosting-prod/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/EraHosting-prod/ApiCluster/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiCluster7CE9CBE6"
+    }
+  ],
+  "/EraHosting-prod/ApiLogGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiLogGroup1DEDFC07"
+    }
+  ],
+  "/EraHosting-prod/JwtSecret/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JwtSecretB8834B39"
+    }
+  ],
+  "/EraHosting-prod/ApiService/LoadBalancerDNS": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceLoadBalancerDNSBF9EB7FC"
+    }
+  ],
+  "/EraHosting-prod/ApiService/ServiceURL": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceServiceURL2EB28DB2"
+    }
+  ],
+  "/EraHosting-prod/ApiService/Service": [
+    {
+      "type": "aws:cdk:warning",
+      "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+      "trace": [
+        "Annotations.addMessage (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2399)",
+        "Annotations.addWarningV2 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1087)",
+        "new BaseService2 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/aws-ecs/lib/base/base-service.js:1:12795)",
+        "new FargateService2 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/aws-ecs/lib/fargate/fargate-service.js:1:6805)",
+        "new FargateService2 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:855)",
+        "new ApplicationLoadBalancedFargateService2 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/aws-ecs-patterns/lib/fargate/application-load-balanced-fargate-service.js:1:6392)",
+        "new ApplicationLoadBalancedFargateService2 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/aws-cdk-lib/core/lib/prop-injectable.js:1:855)",
+        "new HostingStack (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/lib/hosting-stack.ts:71:21)",
+        "Object.<anonymous> (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/bin/app.ts:80:17)",
+        "Module._compile (node:internal/modules/cjs/loader:1521:14)",
+        "Module.m._compile (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/ts-node/src/index.ts:1618:23)",
+        "Module._extensions..js (node:internal/modules/cjs/loader:1623:10)",
+        "Object.require.extensions.<computed> [as .ts] (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/ts-node/src/index.ts:1621:12)",
+        "Module.load (node:internal/modules/cjs/loader:1266:32)",
+        "Function.Module._load (node:internal/modules/cjs/loader:1091:12)",
+        "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)",
+        "phase4 (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/ts-node/src/bin.ts:649:14)",
+        "bootstrap (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/ts-node/src/bin.ts:95:10)",
+        "main (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/ts-node/src/bin.ts:55:10)",
+        "Object.<anonymous> (/home/zeeshan/emergency-response-app/asfand-dashboard/infra/node_modules/ts-node/src/bin.ts:800:3)",
+        "Module._compile (node:internal/modules/cjs/loader:1521:14)",
+        "Object.Module._extensions..js (node:internal/modules/cjs/loader:1623:10)",
+        "Module.load (node:internal/modules/cjs/loader:1266:32)",
+        "Function.Module._load (node:internal/modules/cjs/loader:1091:12)",
+        "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)",
+        "node:internal/main/run_main_module:28:49"
+      ]
+    }
+  ],
+  "/EraHosting-prod/DashboardBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardBucket5758873D"
+    }
+  ],
+  "/EraHosting-prod/DashboardOai/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardOai71CAD0BE"
+    }
+  ],
+  "/EraHosting-prod/DashboardCdn/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardCdn2DA4E99A"
+    }
+  ],
+  "/EraHosting-prod/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/EraHosting-prod/ApiService/LB/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceLB08B891CD"
+    }
+  ],
+  "/EraHosting-prod/ApiService/TaskDef/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceTaskDefDF3191FB"
+    }
+  ],
+  "/EraHosting-prod/ApiService/Service/Service": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiService199661B5"
+    }
+  ],
+  "/EraHosting-prod/DashboardBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DashboardBucketPolicy899268BC"
+    }
+  ],
+  "/EraHosting-prod/ApiService/LB/SecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceLBSecurityGroup5C16BEF8"
+    }
+  ],
+  "/EraHosting-prod/ApiService/LB/SecurityGroup/to EraHostingprodApiServiceSecurityGroupD1F0CB4E:3001": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceLBSecurityGrouptoEraHostingprodApiServiceSecurityGroupD1F0CB4E30012F617AC9"
+    }
+  ],
+  "/EraHosting-prod/ApiService/LB/PublicListener/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceLBPublicListener1394DF3E"
+    }
+  ],
+  "/EraHosting-prod/ApiService/TaskDef/TaskRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceTaskDefTaskRole1014CB34"
+    }
+  ],
+  "/EraHosting-prod/ApiService/TaskDef/ExecutionRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceTaskDefExecutionRole43B90DD6"
+    }
+  ],
+  "/EraHosting-prod/ApiService/Service/SecurityGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceSecurityGroup2592096B"
+    }
+  ],
+  "/EraHosting-prod/ApiService/Service/SecurityGroup/from EraHostingprodApiServiceLBSecurityGroupA5CD8411:3001": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceSecurityGroupfromEraHostingprodApiServiceLBSecurityGroupA5CD8411300120DA2908"
+    }
+  ],
+  "/EraHosting-prod/ApiService/LB/PublicListener/ECSGroup/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceLBPublicListenerECSGroup14A87FE9"
+    }
+  ],
+  "/EraHosting-prod/ApiService/TaskDef/TaskRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceTaskDefTaskRoleDefaultPolicy63C68204"
+    }
+  ],
+  "/EraHosting-prod/ApiService/TaskDef/ExecutionRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiServiceTaskDefExecutionRoleDefaultPolicyDCB48050"
+    }
+  ]
+}

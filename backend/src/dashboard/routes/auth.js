@@ -113,20 +113,38 @@ router.post('/login', loginRateLimiter(), async (req, res) => {
     return res.status(400).json({ error: 'VALIDATION', message: 'email and password are required' });
   }
 
-  const userRow = await findUserByEmail(String(email));
-  if (!userRow) {
-    await recordLoginFailure(String(email));
-    return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Invalid email or password' });
-  }
-
+  let cognitoSub;
+  let userFullName = 'ERA Admin';
+  let userRole = 'Admin';
   try {
-    await cognitoInitiateAuth({ email: String(email), password: String(password) });
+    const authRes = await cognitoInitiateAuth({ email: String(email), password: String(password) });
+    cognitoSub = authRes.cognitoSub;
   } catch (err) {
     await recordLoginFailure(String(email));
     if (err.name === 'UserNotConfirmedException') {
       return res.status(403).json({ error: 'USER_NOT_CONFIRMED', message: 'Verify your email before signing in' });
     }
     return res.status(401).json({ error: 'UNAUTHORIZED', message: 'Invalid email or password' });
+  }
+
+  let userRow = await findUserByEmail(String(email));
+  if (!userRow) {
+    // Auto-create local db record if valid in Cognito but missing in postgres!
+    // Set role conditionally based on predefined domains/accounts
+    if (String(email) === 'mobile3@era.dev') {
+       userFullName = 'ERA Mobile Service';
+       userRole = 'Public';
+    } else {
+       userFullName = 'ERA Administrator';
+       userRole = 'Admin';
+    }
+    userRow = await insertUser({
+      email: String(email),
+      cognitoSub: cognitoSub,
+      role: userRole,
+      fullName: userFullName,
+      isVerified: true,
+    });
   }
 
   await recordLoginSuccess(String(email));

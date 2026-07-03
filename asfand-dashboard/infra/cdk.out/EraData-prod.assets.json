@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "a6d4b9f5b56b959e8699ba046faa61c2a4a5fe8f3cec512387140f5e0a42706e": {
+      "displayName": "EraData-prod Template",
+      "source": {
+        "path": "EraData-prod.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "946849521533-us-east-1-e7fe4a37": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "a6d4b9f5b56b959e8699ba046faa61c2a4a5fe8f3cec512387140f5e0a42706e.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

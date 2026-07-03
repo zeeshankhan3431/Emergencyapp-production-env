@@ -1,0 +1,164 @@
+{
+  "/EraObservability-prod/AlertTopicArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlertTopicArn"
+    }
+  ],
+  "/EraObservability-prod/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/EraObservability-prod/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/EraObservability-prod/OpsAlerts/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OpsAlertsB39E82AA"
+    }
+  ],
+  "/EraObservability-prod/RealtimeThreatClassifierFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RealtimeThreatClassifierFnErrorRateAlarm804206BC"
+    }
+  ],
+  "/EraObservability-prod/RealtimeThreatClassifierFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RealtimeThreatClassifierFnDurationAlarm76B9887A"
+    }
+  ],
+  "/EraObservability-prod/EvidenceProcessorFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EvidenceProcessorFnErrorRateAlarm97539CC0"
+    }
+  ],
+  "/EraObservability-prod/EvidenceProcessorFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EvidenceProcessorFnDurationAlarm4B1B3364"
+    }
+  ],
+  "/EraObservability-prod/AudioTranscriptionWorkerFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AudioTranscriptionWorkerFnErrorRateAlarm60F0D6DA"
+    }
+  ],
+  "/EraObservability-prod/AudioTranscriptionWorkerFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AudioTranscriptionWorkerFnDurationAlarm43D58EB7"
+    }
+  ],
+  "/EraObservability-prod/IncidentSummariserFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IncidentSummariserFnErrorRateAlarmF0C5C0C5"
+    }
+  ],
+  "/EraObservability-prod/IncidentSummariserFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IncidentSummariserFnDurationAlarmADB65871"
+    }
+  ],
+  "/EraObservability-prod/IncidentEscalationHandlerFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IncidentEscalationHandlerFnErrorRateAlarm1174684F"
+    }
+  ],
+  "/EraObservability-prod/IncidentEscalationHandlerFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IncidentEscalationHandlerFnDurationAlarm74499992"
+    }
+  ],
+  "/EraObservability-prod/SmsDispatcherFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SmsDispatcherFnErrorRateAlarm02B2A638"
+    }
+  ],
+  "/EraObservability-prod/SmsDispatcherFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SmsDispatcherFnDurationAlarmA41C62E4"
+    }
+  ],
+  "/EraObservability-prod/PushDispatcherFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PushDispatcherFnErrorRateAlarmE2227937"
+    }
+  ],
+  "/EraObservability-prod/PushDispatcherFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PushDispatcherFnDurationAlarmF67FDC8D"
+    }
+  ],
+  "/EraObservability-prod/MonthlyReportGeneratorFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MonthlyReportGeneratorFnErrorRateAlarmDEAE4DD0"
+    }
+  ],
+  "/EraObservability-prod/MonthlyReportGeneratorFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "MonthlyReportGeneratorFnDurationAlarm5FAA72A1"
+    }
+  ],
+  "/EraObservability-prod/HealthCheckFnErrorRateAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HealthCheckFnErrorRateAlarmEF3CF6CD"
+    }
+  ],
+  "/EraObservability-prod/HealthCheckFnDurationAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "HealthCheckFnDurationAlarmB02F7CE5"
+    }
+  ],
+  "/EraObservability-prod/KinesisIteratorAge/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KinesisIteratorAge66F7CC3B"
+    }
+  ],
+  "/EraObservability-prod/RdsCpu/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsCpuE2A708B5"
+    }
+  ],
+  "/EraObservability-prod/EraOps/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraOps7913064C"
+    }
+  ],
+  "/EraObservability-prod/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/EraObservability-prod/OpsAlerts/ops@example.com/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OpsAlertsopsexamplecom614DCB06"
+    }
+  ]
+}

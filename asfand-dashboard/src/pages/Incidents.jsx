@@ -142,7 +142,9 @@ export default function Incidents() {
                           </span>
                         </td>
                         <td className="px-4 py-3 text-gray-600 font-mono text-xs">{row.id}</td>
-                        <td className="px-4 py-3 text-gray-700">{row.location}</td>
+                        <td className="px-4 py-3 text-gray-700">
+                          {(row.lat && row.lng) ? `${row.lat.toFixed(4)}, ${row.lng.toFixed(4)}` : (row.ai_summary ? row.ai_summary.slice(0, 40) : 'Unknown')}
+                        </td>
                         <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                           {row.openedAt
                             ? new Date(row.openedAt).toLocaleString(undefined, {

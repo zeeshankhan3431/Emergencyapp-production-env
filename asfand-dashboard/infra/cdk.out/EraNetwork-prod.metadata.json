@@ -1,0 +1,272 @@
+{
+  "/EraNetwork-prod/VpcId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcId"
+    }
+  ],
+  "/EraNetwork-prod/LambdaSgId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LambdaSgId"
+    }
+  ],
+  "/EraNetwork-prod/RdsSgId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsSgId"
+    }
+  ],
+  "/EraNetwork-prod/ElastiCacheSgId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ElastiCacheSgId"
+    }
+  ],
+  "/EraNetwork-prod/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/EraNetwork-prod/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpc6710DC47"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcIGW5B4A77E0"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcVPCGW3F7625C6"
+    }
+  ],
+  "/EraNetwork-prod/LambdaSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LambdaSg30A6108C"
+    }
+  ],
+  "/EraNetwork-prod/ElastiCacheSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ElastiCacheSg3DA9FF1D"
+    }
+  ],
+  "/EraNetwork-prod/ElastiCacheSg/from EraNetworkprodLambdaSg1FA2A6FE:6379": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ElastiCacheSgfromEraNetworkprodLambdaSg1FA2A6FE63799C3DAB8B"
+    }
+  ],
+  "/EraNetwork-prod/RdsSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsSg7F9F43B6"
+    }
+  ],
+  "/EraNetwork-prod/RdsSg/from EraNetworkprodLambdaSg1FA2A6FE:5432": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsSgfromEraNetworkprodLambdaSg1FA2A6FE543277E1419F"
+    }
+  ],
+  "/EraNetwork-prod/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Ref\":\"EraVpc6710DC47\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpc6710DC47493D1503"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Fn::GetAtt\":[\"LambdaSg30A6108C\",\"GroupId\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttLambdaSg30A6108CGroupId30BB2F0D"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Ref\":\"EraVpcprivateSubnet1SubnetD079BA01\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpcprivateSubnet1SubnetD079BA0183CB9A21"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Ref\":\"EraVpcprivateSubnet2Subnet77EC42BD\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpcprivateSubnet2Subnet77EC42BD195859C9"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Fn::GetAtt\":[\"RdsSg7F9F43B6\",\"GroupId\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttRdsSg7F9F43B6GroupId133E31A8"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Fn::GetAtt\":[\"ElastiCacheSg3DA9FF1D\",\"GroupId\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttElastiCacheSg3DA9FF1DGroupId0AE1DF35"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Ref\":\"EraVpcpublicSubnet1SubnetAEB0216E\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C"
+    }
+  ],
+  "/EraNetwork-prod/Exports/Output{\"Ref\":\"EraVpcpublicSubnet2Subnet427ECD89\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet1SubnetAEB0216E"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet1RouteTable57352221"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet1RouteTableAssociationC268003C"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet1DefaultRoute670D58D1"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet1/EIP": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet1EIP3F107404"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet1/NATGateway": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet1NATGatewayA1D60E83"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet2Subnet427ECD89"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet2RouteTable88BB4527"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet2RouteTableAssociationFF047A70"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet2DefaultRoute04531CB5"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet2/EIP": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet2EIP1F533566"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/publicSubnet2/NATGateway": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcpublicSubnet2NATGatewayD22FD331"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet1SubnetD079BA01"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet1RouteTableCB9A95DB"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet1RouteTableAssociationF3618457"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet1DefaultRouteB56015EE"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet2Subnet77EC42BD"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet2RouteTable21F61FB1"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet2RouteTableAssociation793BC85E"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/privateSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcprivateSubnet2DefaultRoute86B6A0A9"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/S3Endpoint/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcS3Endpoint11E93058"
+    }
+  ],
+  "/EraNetwork-prod/EraVpc/DynamoDbEndpoint/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EraVpcDynamoDbEndpoint5BEBE21F"
+    }
+  ]
+}

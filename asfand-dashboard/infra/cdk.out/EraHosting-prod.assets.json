@@ -1,0 +1,37 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "b963eadf155b7b11474884110ec78c2c91f677d3d2ca47468716b93da0eecf10": {
+      "displayName": "EraHosting-prod Template",
+      "source": {
+        "path": "EraHosting-prod.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "946849521533-us-east-1-98538926": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "b963eadf155b7b11474884110ec78c2c91f677d3d2ca47468716b93da0eecf10.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {
+    "499362200e11288b72fab537fb89446bc3e289dda1142d2a44628966b7835c44": {
+      "displayName": "ApiService/TaskDef/web/AssetImage",
+      "source": {
+        "directory": "asset.499362200e11288b72fab537fb89446bc3e289dda1142d2a44628966b7835c44",
+        "dockerFile": "Dockerfile"
+      },
+      "destinations": {
+        "946849521533-us-east-1-8878acd5": {
+          "repositoryName": "cdk-hnb659fds-container-assets-946849521533-us-east-1",
+          "imageTag": "499362200e11288b72fab537fb89446bc3e289dda1142d2a44628966b7835c44",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-image-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  }
+}

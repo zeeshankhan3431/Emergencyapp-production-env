@@ -15,7 +15,7 @@ function devApiBase(): string {
 }
 
 /** Production API URL — set before release build */
-export const PROD_API_BASE = 'https://d3kj7wc3d0h4x7.cloudfront.net/api';
+export const PROD_API_BASE = 'https://d1y8tfk0q644v2.cloudfront.net/api';
 
 export const API_BASE = __DEV__ ? devApiBase() : PROD_API_BASE;
 

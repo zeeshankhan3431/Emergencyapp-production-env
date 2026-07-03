@@ -1,13 +1,38 @@
-const markers = [
-  { left: '18%', top: '32%', color: 'bg-red-500' },
-  { left: '45%', top: '25%', color: 'bg-blue-500' },
-  { left: '72%', top: '45%', color: 'bg-orange-500' },
-  { left: '30%', top: '60%', color: 'bg-red-500' },
-  { left: '58%', top: '70%', color: 'bg-blue-500' },
-  { left: '80%', top: '28%', color: 'bg-orange-500' },
-];
+import { useEffect, useState } from 'react';
+import { getMapPoints } from '../lib/api';
+
+const ICONS = {
+  fire: 'bg-red-500',
+  medical: 'bg-orange-500',
+  traffic: 'bg-blue-500',
+  public_order: 'bg-purple-500',
+};
 
 export default function LiveMap() {
+  const [markers, setMarkers] = useState([]);
+  
+  useEffect(() => {
+    let active = true;
+    getMapPoints(7).then((data) => {
+      if (!active || !data?.points) return;
+      // Map arbitrary lat/lng to percentage bounds for visualization
+      const bounded = data.points.map(p => {
+        // Quick visual spread (mock mapping for the grid, usually you'd use Leaflet/Mapbox)
+        const left = ((p.generalised_lng + 180) / 360 * 100);
+        const top = ((90 - p.generalised_lat) / 180 * 100);
+        // Bounding mock visual to center 60%
+        const visualLeft = 20 + (left % 60);
+        const visualTop = 20 + (top % 60);
+        return {
+          left: `${visualLeft}%`,
+          top: `${visualTop}%`,
+          color: ICONS[p.type] ?? 'bg-red-500'
+        };
+      });
+      setMarkers(bounded.slice(0, 50)); // cap at 50 max for visual
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
       <div className="flex items-center justify-between mb-4">

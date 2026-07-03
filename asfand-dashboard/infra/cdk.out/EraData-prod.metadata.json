@@ -1,0 +1,426 @@
+{
+  "/EraData-prod/RedisSubnetGroup": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RedisSubnetGroup"
+    }
+  ],
+  "/EraData-prod/RedisParams": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RedisParams"
+    }
+  ],
+  "/EraData-prod/RedisCluster": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RedisCluster"
+    }
+  ],
+  "/EraData-prod/RefreshTokens": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "RefreshTokens585DE461"
+      }
+    }
+  ],
+  "/EraData-prod/EvidenceAuditLog": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "EvidenceAuditLogA19F4237"
+      }
+    }
+  ],
+  "/EraData-prod/AiResults": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "AiResults2E6CFAA4"
+      }
+    }
+  ],
+  "/EraData-prod/NotificationLog": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "NotificationLogA30FC3EC"
+      }
+    }
+  ],
+  "/EraData-prod/DeviceTokens": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "DeviceTokens75E7DCD8"
+      }
+    }
+  ],
+  "/EraData-prod/ReportsIndex": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "ReportsIndexD9274D82"
+      }
+    }
+  ],
+  "/EraData-prod/AuditLog": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "AuditLogA5B7094E"
+      }
+    }
+  ],
+  "/EraData-prod/Content": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": {
+        "Ref": "Content88381566"
+      }
+    }
+  ],
+  "/EraData-prod/OpenSearch": [
+    {
+      "type": "aws:cdk:hasPhysicalName",
+      "data": "era-search-prod"
+    }
+  ],
+  "/EraData-prod/RdsEndpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsEndpoint"
+    }
+  ],
+  "/EraData-prod/RdsSecretArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsSecretArn"
+    }
+  ],
+  "/EraData-prod/OpenSearchEndpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OpenSearchEndpoint"
+    }
+  ],
+  "/EraData-prod/EvidenceBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EvidenceBucketName"
+    }
+  ],
+  "/EraData-prod/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/EraData-prod/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/EraData-prod/DataKms/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DataKmsCA36A10F"
+    }
+  ],
+  "/EraData-prod/S3Kms/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "S3Kms6916C01B"
+    }
+  ],
+  "/EraData-prod/OpenSearchSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OpenSearchSg98CA9349"
+    }
+  ],
+  "/EraData-prod/OpenSearchSg/from EraNetworkprodLambdaSg1FA2A6FE:443": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OpenSearchSgfromEraNetworkprodLambdaSg1FA2A6FE443F8D1DEA0"
+    }
+  ],
+  "/EraData-prod/RdsCredentials/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsCredentials9FB39D52"
+    }
+  ],
+  "/EraData-prod/RdsSubnets/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsSubnets"
+    }
+  ],
+  "/EraData-prod/Postgres/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Postgres9DC8BB04"
+    }
+  ],
+  "/EraData-prod/RefreshTokens/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RefreshTokens585DE461"
+    }
+  ],
+  "/EraData-prod/EvidenceAuditLog/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EvidenceAuditLogA19F4237"
+    }
+  ],
+  "/EraData-prod/AiResults/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AiResults2E6CFAA4"
+    }
+  ],
+  "/EraData-prod/NotificationLog/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "NotificationLogA30FC3EC"
+    }
+  ],
+  "/EraData-prod/DeviceTokens/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DeviceTokens75E7DCD8"
+    }
+  ],
+  "/EraData-prod/ReportsIndex/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsIndexD9274D82"
+    }
+  ],
+  "/EraData-prod/AuditLog/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AuditLogA5B7094E"
+    }
+  ],
+  "/EraData-prod/Content/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Content88381566"
+    }
+  ],
+  "/EraData-prod/OpenSearch/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OpenSearch587998CD"
+    }
+  ],
+  "/EraData-prod/AccessLogs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AccessLogs8B620ECA"
+    }
+  ],
+  "/EraData-prod/Evidence/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Evidence4CC26D68"
+    }
+  ],
+  "/EraData-prod/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
+    }
+  ],
+  "/EraData-prod/Transcripts/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Transcripts77918A18"
+    }
+  ],
+  "/EraData-prod/Reports/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Reports65402A0A"
+    }
+  ],
+  "/EraData-prod/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Ref\":\"RdsCredentials9FB39D52\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefRdsCredentials9FB39D528C70F7D9"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"Evidence4CC26D68\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttEvidence4CC26D68Arn9E0A376E"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"S3Kms6916C01B\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttS3Kms6916C01BArnCCD975BC"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"Transcripts77918A18\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttTranscripts77918A18ArnF90D20A3"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"Reports65402A0A\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttReports65402A0AArn549BAC56"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"OpenSearch587998CD\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttOpenSearch587998CDArn21F4AB75"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"Postgres9DC8BB04\",\"Endpoint.Address\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttPostgres9DC8BB04EndpointAddress36F9722A"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"Postgres9DC8BB04\",\"Endpoint.Port\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttPostgres9DC8BB04EndpointPortB3107ED8"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"OpenSearch587998CD\",\"DomainEndpoint\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttOpenSearch587998CDDomainEndpointBD9D8E0C"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"RedisCluster\",\"PrimaryEndPoint.Address\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttRedisClusterPrimaryEndPointAddressCFB16E1D"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Fn::GetAtt\":[\"RedisCluster\",\"PrimaryEndPoint.Port\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttRedisClusterPrimaryEndPointPort9B15719F"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Ref\":\"Evidence4CC26D68\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefEvidence4CC26D68749B0E12"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Ref\":\"Transcripts77918A18\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefTranscripts77918A180E267BFC"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Ref\":\"Reports65402A0A\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefReports65402A0A5E09D1ED"
+    }
+  ],
+  "/EraData-prod/Exports/Output{\"Ref\":\"Postgres9DC8BB04\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefPostgres9DC8BB0479C34812"
+    }
+  ],
+  "/EraData-prod/DataKms/Alias/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DataKmsAliasBD81D3F0"
+    }
+  ],
+  "/EraData-prod/S3Kms/Alias/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "S3KmsAlias97404EDF"
+    }
+  ],
+  "/EraData-prod/RdsCredentials/Attachment/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsCredentialsAttachmentE65E7659"
+    }
+  ],
+  "/EraData-prod/RdsCredentials/RdsRotation/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsCredentialsRdsRotation31AE67DF"
+    }
+  ],
+  "/EraData-prod/RdsCredentials/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RdsCredentialsPolicy34057D01"
+    }
+  ],
+  "/EraData-prod/Postgres/MonitoringRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PostgresMonitoringRoleEA66DD12"
+    }
+  ],
+  "/EraData-prod/AccessLogs/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AccessLogsPolicyABDC4D2D"
+    }
+  ],
+  "/EraData-prod/Evidence/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EvidencePolicy94E40009"
+    }
+  ],
+  "/EraData-prod/Evidence/Notifications/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EvidenceNotifications02D0B0C6"
+    }
+  ],
+  "/EraData-prod/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+    }
+  ],
+  "/EraData-prod/Transcripts/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "TranscriptsPolicy129F4318"
+    }
+  ],
+  "/EraData-prod/Reports/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ReportsPolicyA13B441D"
+    }
+  ],
+  "/EraData-prod/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36"
+    }
+  ]
+}
