@@ -1,0 +1,52 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+      "displayName": "EraHosting-dev/Custom::S3AutoDeleteObjectsCustomResourceProvider Code",
+      "source": {
+        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "946849521533-us-east-1-0255e2a1": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
+        }
+      }
+    },
+    "07f38dba3796bab28afff34029b8f56a6d270d0772627d5b835d88ecd988f923": {
+      "displayName": "EraHosting-dev Template",
+      "source": {
+        "path": "EraHosting-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "946849521533-us-east-1-d33e8276": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "07f38dba3796bab28afff34029b8f56a6d270d0772627d5b835d88ecd988f923.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {
+    "acfda519c8a6d0627180bcae05592e56852fee70309a5e13f13f6af5cec0e6eb": {
+      "displayName": "ApiService/TaskDef/web/AssetImage",
+      "source": {
+        "directory": "asset.acfda519c8a6d0627180bcae05592e56852fee70309a5e13f13f6af5cec0e6eb",
+        "dockerFile": "Dockerfile"
+      },
+      "destinations": {
+        "946849521533-us-east-1-71b2d8c5": {
+          "repositoryName": "cdk-hnb659fds-container-assets-946849521533-us-east-1",
+          "imageTag": "acfda519c8a6d0627180bcae05592e56852fee70309a5e13f13f6af5cec0e6eb",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-image-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  }
+}

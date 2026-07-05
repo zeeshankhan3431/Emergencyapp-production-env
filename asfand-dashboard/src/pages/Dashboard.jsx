@@ -8,7 +8,6 @@ import {
 import MetricCard from '../components/MetricCard';
 import IncidentsOverTimeChart from '../components/IncidentsOverTimeChart';
 import IncidentTypeCard from '../components/IncidentTypeCard';
-import LiveMap from '../components/LiveMap';
 import RecentIncidents from '../components/RecentIncidents';
 import { getDashboardSummary, getIncidentsOverTimeRange } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
@@ -28,7 +27,7 @@ export default function Dashboard() {
   const [recentIncidents, setRecentIncidents] = useState(null);
   const [chartData, setChartData] = useState(null);     // null = loading, [] = empty
   const [typeBreakdown, setTypeBreakdown] = useState(null);
-  const [chartRange, setChartRange] = useState('today');
+  const [chartRange, setChartRange] = useState('7days');
   const timerRef = useRef(null);
 
   // Fetch chart data separately when range changes
@@ -46,10 +45,12 @@ export default function Dashboard() {
     setError('');
     try {
       const data = await getDashboardSummary();
-      const mapped = (data.metrics ?? []).map((m) => ({
-        ...m,
-        icon: ICON_BY_KEY[m.key] ?? HiOutlineExclamationTriangle,
-      }));
+      const mapped = (data.metrics ?? [])
+        .filter((m) => m.key !== 'avgResponse' && m.key !== 'resolved')
+        .map((m) => ({
+          ...m,
+          icon: ICON_BY_KEY[m.key] ?? HiOutlineExclamationTriangle,
+        }));
       setMetrics(mapped);
       setRecentIncidents(data.recentIncidents ?? []);
       setTypeBreakdown(data.incidentTypeBreakdown ?? []);
@@ -67,8 +68,16 @@ export default function Dashboard() {
   useEffect(() => {
     if (authLoading || !user) return;
     fetchDashboard(false);
-    timerRef.current = setInterval(() => fetchDashboard(true), 30000); // refresh every 30s
-    return () => clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => fetchDashboard(true), 30000);
+
+    // Listen for incident deletions from Incidents page to refresh metrics immediately
+    const onDeleted = () => fetchDashboard(true);
+    window.addEventListener('incident-deleted', onDeleted);
+
+    return () => {
+      clearInterval(timerRef.current);
+      window.removeEventListener('incident-deleted', onDeleted);
+    };
   }, [user, authLoading, fetchDashboard]);
 
   if (authLoading) {
@@ -92,7 +101,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <div className="flex-1 flex flex-col min-h-0 bg-slate-50/50">
       <div className="p-8 space-y-6">
         {error ? (
           <div className="rounded-lg border border-amber-200 bg-amber-50 text-amber-900 text-sm px-4 py-3">
@@ -121,8 +130,7 @@ export default function Dashboard() {
           />
           <IncidentTypeCard categories={typeBreakdown} />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <LiveMap />
+        <div className="grid grid-cols-1 gap-6">
           <RecentIncidents items={recentIncidents} />
         </div>
       </div>

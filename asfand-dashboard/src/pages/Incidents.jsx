@@ -1,75 +1,116 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   HiOutlineBellAlert,
   HiOutlineHeart,
   HiOutlineTruck,
   HiOutlineShieldCheck,
   HiOutlineMagnifyingGlass,
+  HiOutlineExclamationCircle,
 } from 'react-icons/hi2';
-import { getIncidents } from '../lib/api';
+import { getIncidents, deleteIncident } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
 
 const ICONS = {
   fire: HiOutlineBellAlert,
   medical: HiOutlineHeart,
   traffic: HiOutlineTruck,
   public_order: HiOutlineShieldCheck,
+  assault: HiOutlineExclamationCircle,
 };
 
-const STATUSES = ['', 'Dispatching', 'On Scene', 'Resolved', 'Open'];
-
 function statusBadge(status) {
-  if (status === 'Dispatching') return 'bg-red-100 text-primary';
-  if (status === 'On Scene') return 'bg-blue-100 text-blue-700';
-  if (status === 'Resolved') return 'bg-green-100 text-green-700';
+  if (status === 'dispatching') return 'bg-red-100 text-primary';
+  if (status === 'on_scene') return 'bg-blue-100 text-blue-700';
+  if (status === 'resolved') return 'bg-green-100 text-green-700';
+  if (status === 'triggered') return 'bg-orange-100 text-orange-700';
   return 'bg-gray-100 text-gray-700';
 }
 
+function formatLocation(row) {
+  if (row.lat && row.lng && (row.lat !== 0 || row.lng !== 0)) {
+    return `${Number(row.lat).toFixed(4)}, ${Number(row.lng).toFixed(4)}`;
+  }
+  if (row.ai_summary) return row.ai_summary.slice(0, 40);
+  return 'No GPS data';
+}
+
 export default function Incidents() {
+  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [status, setStatus] = useState('');
   const [q, setQ] = useState('');
+  // Track locally deleted IDs so polling doesn't bring them back
+  const deletedIdsRef = useRef(new Set());
+  const fetchTimerRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
-      let fetchTimer;
-      const fetchIncidents = async (isBackground = false) => {
-        if (!isBackground) setLoading(true);
-        setError('');
-        const p = {};
-        if (status) p.status = status;
-        if (q.trim()) p.q = q.trim();
-        try {
-          const data = await getIncidents(p);
-          if (!cancelled) setItems(data.items ?? []);
-        } catch (e) {
-          if (!cancelled) {
-            setError(e.data?.message || e.message || 'Could not load incidents. Is the API running?');
-            setItems([]);
-          }
-        } finally {
-          if (!cancelled && !isBackground) setLoading(false);
-        }
-      };
 
-      fetchIncidents();
-      fetchTimer = setInterval(() => fetchIncidents(true), 5000);
+    const fetchIncidents = async (isBackground = false) => {
+      if (!isBackground) setLoading(true);
+      setError('');
+      const p = {};
+      if (q.trim()) p.q = q.trim();
+      try {
+        const data = await getIncidents(p);
+        if (!cancelled) {
+          // Filter out any IDs we've already deleted locally
+          const fresh = (data.items ?? []).filter(
+            (item) => !deletedIdsRef.current.has(item.id)
+          );
+          setItems(fresh);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e.data?.message || e.message || 'Could not load incidents.');
+          if (!isBackground) setItems([]);
+        }
+      } finally {
+        if (!cancelled && !isBackground) setLoading(false);
+      }
+    };
+
+    fetchIncidents();
+    fetchTimerRef.current = setInterval(() => fetchIncidents(true), 10000);
 
     return () => {
       cancelled = true;
-      if (fetchTimer) clearInterval(fetchTimer);
+      if (fetchTimerRef.current) clearInterval(fetchTimerRef.current);
     };
-  }, [status, q]);
+  }, [q]);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this incident?')) return;
+
+    // 1. Immediately remove from UI
+    setItems((prev) => prev.filter((item) => item.id !== id));
+    // 2. Track this ID so polls don't bring it back
+    deletedIdsRef.current.add(id);
+
+    try {
+      await deleteIncident(id);
+      // Tell Dashboard to refresh its metrics immediately
+      window.dispatchEvent(new CustomEvent('incident-deleted', { detail: { id } }));
+    } catch (err) {
+      // If delete failed, remove from deletedIds and restore
+      deletedIdsRef.current.delete(id);
+      alert('Failed to delete incident: ' + err.message);
+      // Re-fetch to restore correct state
+      try {
+        const data = await getIncidents({});
+        setItems(
+          (data.items ?? []).filter((item) => !deletedIdsRef.current.has(item.id))
+        );
+      } catch (_) { /* ignore */ }
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <div className="p-8 space-y-6 max-w-6xl">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Incidents</h1>
-          <p className="text-gray-500 mt-1 text-sm">
-            All emergency incidents with real-time escalation and dispatch status.
-          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
@@ -79,24 +120,10 @@ export default function Incidents() {
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search ID, type, or location…"
+              placeholder="Search ID, type…"
               className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-200 text-sm"
             />
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-600">
-            Status
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white"
-            >
-              {STATUSES.map((s) => (
-                <option key={s || 'all'} value={s}>
-                  {s || 'All'}
-                </option>
-              ))}
-            </select>
-          </label>
         </div>
 
         {error ? (
@@ -115,19 +142,20 @@ export default function Incidents() {
                   <th className="px-4 py-3 font-medium">Location</th>
                   <th className="px-4 py-3 font-medium">Opened</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  {user?.role === 'Admin' && <th className="px-4 py-3 font-medium text-right">Actions</th>}
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
                       Loading…
                     </td>
                   </tr>
                 ) : items.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
-                      No incidents match your filters.
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                      No incidents found.
                     </td>
                   </tr>
                 ) : (
@@ -138,13 +166,11 @@ export default function Incidents() {
                         <td className="px-4 py-3">
                           <span className="inline-flex items-center gap-2">
                             <Icon className="w-4 h-4 text-gray-400 shrink-0" />
-                            <span className="font-medium text-gray-900">{row.type}</span>
+                            <span className="font-medium text-gray-900 capitalize">{row.type}</span>
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-gray-600 font-mono text-xs">{row.id}</td>
-                        <td className="px-4 py-3 text-gray-700">
-                          {(row.lat && row.lng) ? `${row.lat.toFixed(4)}, ${row.lng.toFixed(4)}` : (row.ai_summary ? row.ai_summary.slice(0, 40) : 'Unknown')}
-                        </td>
+                        <td className="px-4 py-3 text-gray-600 font-mono text-xs">{row.id.slice(0, 8)}…</td>
+                        <td className="px-4 py-3 text-gray-700">{formatLocation(row)}</td>
                         <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                           {row.openedAt
                             ? new Date(row.openedAt).toLocaleString(undefined, {
@@ -160,6 +186,17 @@ export default function Incidents() {
                             {row.status}
                           </span>
                         </td>
+                        {user?.role === 'Admin' && (
+                          <td className="px-4 py-3 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(row.id)}
+                              className="text-red-600 hover:text-red-800 text-sm font-medium transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        )}
                       </tr>
                     );
                   })

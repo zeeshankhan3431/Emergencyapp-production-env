@@ -63,8 +63,8 @@ router.get('/summary', requireAdminOrAnalyst, async (_req, res) => {
     },
     {
       key: 'today',
-      title: "Today's Escalations",
-      value: String(stats.escalated_today),
+      title: "Today's Incidents",
+      value: String(stats.created_today),
       change: '',
       changePositive: true,
     },

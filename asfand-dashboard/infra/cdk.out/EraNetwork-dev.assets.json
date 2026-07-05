@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "eb2129632a70bb333b05c5192f7f808299415bfbb308eb62d9b15a5b0c66d57a": {
+      "displayName": "EraNetwork-dev Template",
+      "source": {
+        "path": "EraNetwork-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "946849521533-us-east-1-c7e2fdcf": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "eb2129632a70bb333b05c5192f7f808299415bfbb308eb62d9b15a5b0c66d57a.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

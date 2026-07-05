@@ -192,12 +192,33 @@ class EmergencyModule(private val reactContext: ReactApplicationContext) :
         }
 
         try {
-            val smsManager = SmsManager.getDefault()
+            val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                reactContext.getSystemService(SmsManager::class.java) ?: SmsManager.getDefault()
+            } else {
+                @Suppress("DEPRECATION")
+                SmsManager.getDefault()
+            }
+            
             val parts = smsManager.divideMessage(message)
-            smsManager.sendMultipartTextMessage(phone, null, parts, null, null)
+            if (parts.size > 1) {
+                smsManager.sendMultipartTextMessage(phone, null, parts, null, null)
+            } else {
+                smsManager.sendTextMessage(phone, null, message, null, null)
+            }
             promise.resolve(true)
         } catch (e: Exception) {
-            promise.reject("SMS_ERROR", e.message)
+            // Fallback: If direct SMS fails (e.g. dual SIM or carrier restriction), open SMS app
+            try {
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("sms:$phone")
+                    putExtra("sms_body", message)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                reactContext.startActivity(intent)
+                promise.resolve(true)
+            } catch (fallbackErr: Exception) {
+                promise.reject("SMS_ERROR", "Direct send and fallback both failed: " + e.message)
+            }
         }
     }
 

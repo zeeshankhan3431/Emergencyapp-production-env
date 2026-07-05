@@ -11,16 +11,16 @@ import {
 import { HiOutlineChevronDown } from 'react-icons/hi2';
 
 const RANGES = [
-  { label: 'Today (24h)', value: 'today' },
   { label: 'Last 7 Days', value: '7days' },
+  { label: 'Today (24h)', value: 'today' },
   { label: 'Last 30 Days', value: '30days' },
 ];
 
 export default function IncidentsOverTimeChart({ data: chartData, onRangeChange } = {}) {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(RANGES[0]);
+  const [selected, setSelected] = useState(RANGES[0]); // default: 7 days
 
-  // While loading (null), show empty placeholder — never show dummy data
+  // While loading (null), show spinner — never show dummy data
   const data = Array.isArray(chartData) ? chartData : [];
   const isLoading = chartData === null;
 
@@ -68,7 +68,10 @@ export default function IncidentsOverTimeChart({ data: chartData, onRangeChange 
         {isLoading ? (
           <div className="h-full flex items-center justify-center text-sm text-gray-400">Loading chart data…</div>
         ) : data.length === 0 ? (
-          <div className="h-full flex items-center justify-center text-sm text-gray-400">No incidents in this period.</div>
+          <div className="h-full flex flex-col items-center justify-center gap-2 text-sm text-gray-400">
+            <span>No incidents recorded in this period.</span>
+            <span className="text-xs text-gray-300">Try selecting a different time range.</span>
+          </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>

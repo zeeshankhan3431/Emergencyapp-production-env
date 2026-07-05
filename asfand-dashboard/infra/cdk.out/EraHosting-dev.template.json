@@ -1,0 +1,1297 @@
+{
+ "Resources": {
+  "ApiCluster7CE9CBE6": {
+   "Type": "AWS::ECS::Cluster",
+   "Properties": {
+    "ClusterName": "era-api-dev",
+    "ClusterSettings": [
+     {
+      "Name": "containerInsights",
+      "Value": "enabled"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiCluster/Resource"
+   }
+  },
+  "ApiLogGroup1DEDFC07": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/era/api/dev",
+    "RetentionInDays": 90
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiLogGroup/Resource"
+   }
+  },
+  "JwtSecretB8834B39": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "GenerateSecretString": {
+     "ExcludeCharacters": "\"@/\\",
+     "PasswordLength": 48
+    },
+    "Name": "era/jwt/dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/JwtSecret/Resource"
+   }
+  },
+  "ApiServiceLB08B891CD": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "ApiServiceLBSecurityGroup5C16BEF8",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C"
+     },
+     {
+      "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53"
+     }
+    ],
+    "Type": "application"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/LB/Resource"
+   }
+  },
+  "ApiServiceLBSecurityGroup5C16BEF8": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatically created Security Group for ELB EraHostingdevApiServiceLB7ECA1B65",
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpc6710DC47493D1503"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/LB/SecurityGroup/Resource"
+   }
+  },
+  "ApiServiceLBSecurityGrouptoEraHostingdevApiServiceSecurityGroup2567B77330019A29FB62": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "DestinationSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceSecurityGroup2592096B",
+      "GroupId"
+     ]
+    },
+    "FromPort": 3001,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceLBSecurityGroup5C16BEF8",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 3001
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/LB/SecurityGroup/to EraHostingdevApiServiceSecurityGroup2567B773:3001"
+   }
+  },
+  "ApiServiceLBPublicListener1394DF3E": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "ApiServiceLBPublicListenerECSGroup14A87FE9"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "ApiServiceLB08B891CD"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/LB/PublicListener/Resource"
+   }
+  },
+  "ApiServiceLBPublicListenerECSGroup14A87FE9": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "HealthCheckIntervalSeconds": 30,
+    "HealthCheckPath": "/api/health",
+    "Matcher": {
+     "HttpCode": "200"
+    },
+    "Port": 80,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "ip",
+    "VpcId": {
+     "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpc6710DC47493D1503"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/LB/PublicListener/ECSGroup/Resource"
+   }
+  },
+  "ApiServiceTaskDefTaskRole1014CB34": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/TaskDef/TaskRole/Resource"
+   }
+  },
+  "ApiServiceTaskDefTaskRoleDefaultPolicy63C68204": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "EraData-dev:ExportsOutputRefRdsCredentials9FB39D528C70F7D9"
+       }
+      },
+      {
+       "Action": [
+        "cognito-idp:InitiateAuth",
+        "cognito-idp:SignUp",
+        "cognito-idp:ForgotPassword",
+        "cognito-idp:ConfirmForgotPassword",
+        "cognito-idp:AdminConfirmSignUp"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:cognito-idp:us-east-1:946849521533:userpool/",
+          {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefUserPool6BA7E5F296FD7236"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "kinesis:PutRecord",
+        "kinesis:PutRecords"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:kinesis:us-east-1:946849521533:stream/",
+          {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEvents53BDC06D05CA1CAC"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefEvidence4CC26D68749B0E12"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefEvidence4CC26D68749B0E12"
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefTranscripts77918A180E267BFC"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefTranscripts77918A180E267BFC"
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefReports65402A0A5E09D1ED"
+           }
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefReports65402A0A5E09D1ED"
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "sqs:SendMessage",
+        "sqs:GetQueueUrl"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:sqs:us-east-1:946849521533:*"
+      },
+      {
+       "Action": "dynamodb:*",
+       "Effect": "Allow",
+       "Resource": "arn:aws:dynamodb:us-east-1:946849521533:table/*_dev"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ApiServiceTaskDefTaskRoleDefaultPolicy63C68204",
+    "Roles": [
+     {
+      "Ref": "ApiServiceTaskDefTaskRole1014CB34"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/TaskDef/TaskRole/DefaultPolicy/Resource"
+   }
+  },
+  "ApiServiceTaskDefDF3191FB": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Environment": [
+       {
+        "Name": "NODE_ENV",
+        "Value": "production"
+       },
+       {
+        "Name": "PORT",
+        "Value": "3001"
+       },
+       {
+        "Name": "DEPLOY_ENV",
+        "Value": "dev"
+       },
+       {
+        "Name": "SKIP_AUTH",
+        "Value": "false"
+       },
+       {
+        "Name": "COGNITO_USE_MOCK",
+        "Value": "false"
+       },
+       {
+        "Name": "RUN_MIGRATIONS",
+        "Value": "true"
+       },
+       {
+        "Name": "RDS_HOST",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputFnGetAttPostgres9DC8BB04EndpointAddress36F9722A"
+        }
+       },
+       {
+        "Name": "RDS_PORT",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputFnGetAttPostgres9DC8BB04EndpointPortB3107ED8"
+        }
+       },
+       {
+        "Name": "RDS_USER",
+        "Value": "era_admin"
+       },
+       {
+        "Name": "RDS_DATABASE",
+        "Value": "emergencydb"
+       },
+       {
+        "Name": "AWS_REGION",
+        "Value": "us-east-1"
+       },
+       {
+        "Name": "COGNITO_USER_POOL_ID",
+        "Value": {
+         "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefUserPool6BA7E5F296FD7236"
+        }
+       },
+       {
+        "Name": "COGNITO_CLIENT_ID",
+        "Value": {
+         "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefUserPoolWebClient4C9370B02E2C9FF9"
+        }
+       },
+       {
+        "Name": "KINESIS_STREAM_NAME",
+        "Value": {
+         "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEvents53BDC06D05CA1CAC"
+        }
+       },
+       {
+        "Name": "S3_EVIDENCE_BUCKET",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputRefEvidence4CC26D68749B0E12"
+        }
+       },
+       {
+        "Name": "TRANSCRIPTS_BUCKET",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputRefTranscripts77918A180E267BFC"
+        }
+       },
+       {
+        "Name": "REPORTS_BUCKET",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputRefReports65402A0A5E09D1ED"
+        }
+       },
+       {
+        "Name": "TRANSCRIPTION_QUEUE_URL",
+        "Value": {
+         "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefTranscriptionJobsC842707B81541DBA"
+        }
+       },
+       {
+        "Name": "SUMMARISATION_QUEUE_URL",
+        "Value": {
+         "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefSummarisationJobs37072A5CE5FABED7"
+        }
+       },
+       {
+        "Name": "OPENSEARCH_ENDPOINT",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputFnGetAttOpenSearch587998CDDomainEndpointBD9D8E0C"
+        }
+       },
+       {
+        "Name": "REDIS_HOST",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputFnGetAttRedisSingleRedisEndpointAddressEB5682FE"
+        }
+       },
+       {
+        "Name": "REDIS_PORT",
+        "Value": {
+         "Fn::ImportValue": "EraData-dev:ExportsOutputFnGetAttRedisSingleRedisEndpointPortB05DBEFD"
+        }
+       },
+       {
+        "Name": "REGISTRATION_ROLE_SECRET",
+        "Value": "era-dev-admin-secret"
+       }
+      ],
+      "Essential": true,
+      "Image": {
+       "Fn::Sub": "946849521533.dkr.ecr.us-east-1.${AWS::URLSuffix}/cdk-hnb659fds-container-assets-946849521533-us-east-1:acfda519c8a6d0627180bcae05592e56852fee70309a5e13f13f6af5cec0e6eb"
+      },
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "ApiLogGroup1DEDFC07"
+        },
+        "awslogs-stream-prefix": "api",
+        "awslogs-region": "us-east-1"
+       }
+      },
+      "Name": "web",
+      "PortMappings": [
+       {
+        "ContainerPort": 3001,
+        "Protocol": "tcp"
+       }
+      ],
+      "Secrets": [
+       {
+        "Name": "RDS_PASSWORD",
+        "ValueFrom": {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "EraData-dev:ExportsOutputRefRdsCredentials9FB39D528C70F7D9"
+           },
+           ":password::"
+          ]
+         ]
+        }
+       },
+       {
+        "Name": "JWT_SECRET",
+        "ValueFrom": {
+         "Ref": "JwtSecretB8834B39"
+        }
+       }
+      ]
+     }
+    ],
+    "Cpu": "512",
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "ApiServiceTaskDefExecutionRole43B90DD6",
+      "Arn"
+     ]
+    },
+    "Family": "EraHostingdevApiServiceTaskDefB4BED40D",
+    "Memory": "1024",
+    "NetworkMode": "awsvpc",
+    "RequiresCompatibilities": [
+     "FARGATE"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "ApiServiceTaskDefTaskRole1014CB34",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/TaskDef/Resource"
+   }
+  },
+  "ApiServiceTaskDefExecutionRole43B90DD6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/TaskDef/ExecutionRole/Resource"
+   }
+  },
+  "ApiServiceTaskDefExecutionRoleDefaultPolicyDCB48050": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":ecr:us-east-1:946849521533:repository/cdk-hnb659fds-container-assets-946849521533-us-east-1"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "ecr:GetAuthorizationToken",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ApiLogGroup1DEDFC07",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "EraData-dev:ExportsOutputRefRdsCredentials9FB39D528C70F7D9"
+       }
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "JwtSecretB8834B39"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ApiServiceTaskDefExecutionRoleDefaultPolicyDCB48050",
+    "Roles": [
+     {
+      "Ref": "ApiServiceTaskDefExecutionRole43B90DD6"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/TaskDef/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "ApiService199661B5": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "ApiCluster7CE9CBE6"
+    },
+    "DeploymentConfiguration": {
+     "Alarms": {
+      "AlarmNames": [],
+      "Enable": false,
+      "Rollback": false
+     },
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "DesiredCount": 1,
+    "EnableECSManagedTags": false,
+    "HealthCheckGracePeriodSeconds": 120,
+    "LaunchType": "FARGATE",
+    "LoadBalancers": [
+     {
+      "ContainerName": "web",
+      "ContainerPort": 3001,
+      "TargetGroupArn": {
+       "Ref": "ApiServiceLBPublicListenerECSGroup14A87FE9"
+      }
+     }
+    ],
+    "NetworkConfiguration": {
+     "AwsvpcConfiguration": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+       {
+        "Fn::GetAtt": [
+         "ApiServiceSecurityGroup2592096B",
+         "GroupId"
+        ]
+       }
+      ],
+      "Subnets": [
+       {
+        "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpcprivateSubnet1SubnetD079BA0183CB9A21"
+       },
+       {
+        "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpcprivateSubnet2Subnet77EC42BD195859C9"
+       }
+      ]
+     }
+    },
+    "ServiceName": "era-api-dev",
+    "TaskDefinition": {
+     "Ref": "ApiServiceTaskDefDF3191FB"
+    }
+   },
+   "DependsOn": [
+    "ApiServiceLBPublicListenerECSGroup14A87FE9",
+    "ApiServiceLBPublicListener1394DF3E",
+    "ApiServiceTaskDefTaskRoleDefaultPolicy63C68204",
+    "ApiServiceTaskDefTaskRole1014CB34"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/Service/Service"
+   }
+  },
+  "ApiServiceSecurityGroup2592096B": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "EraHosting-dev/ApiService/Service/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "EraNetwork-dev:ExportsOutputRefEraVpc6710DC47493D1503"
+    }
+   },
+   "DependsOn": [
+    "ApiServiceTaskDefTaskRoleDefaultPolicy63C68204",
+    "ApiServiceTaskDefTaskRole1014CB34"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/Service/SecurityGroup/Resource"
+   }
+  },
+  "ApiServiceSecurityGroupfromEraHostingdevApiServiceLBSecurityGroup96DAAB2E3001F87AB3DB": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "FromPort": 3001,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceSecurityGroup2592096B",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceLBSecurityGroup5C16BEF8",
+      "GroupId"
+     ]
+    },
+    "ToPort": 3001
+   },
+   "DependsOn": [
+    "ApiServiceTaskDefTaskRoleDefaultPolicy63C68204",
+    "ApiServiceTaskDefTaskRole1014CB34"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/ApiService/Service/SecurityGroup/from EraHostingdevApiServiceLBSecurityGroup96DAAB2E:3001"
+   }
+  },
+  "RdsFromEcs": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Postgres from ECS API",
+    "FromPort": 5432,
+    "GroupId": {
+     "Fn::ImportValue": "EraNetwork-dev:ExportsOutputFnGetAttRdsSg7F9F43B6GroupId133E31A8"
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceSecurityGroup2592096B",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5432
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/RdsFromEcs"
+   }
+  },
+  "RedisFromEcs": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Redis from ECS API",
+    "FromPort": 6379,
+    "GroupId": {
+     "Fn::ImportValue": "EraNetwork-dev:ExportsOutputFnGetAttElastiCacheSg3DA9FF1DGroupId0AE1DF35"
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceSecurityGroup2592096B",
+      "GroupId"
+     ]
+    },
+    "ToPort": 6379
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/RedisFromEcs"
+   }
+  },
+  "CloudFrontToAlb": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "HTTPS from CloudFront to ALB",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceLBSecurityGroup5C16BEF8",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/CloudFrontToAlb"
+   }
+  },
+  "HttpFromCloudFront": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "CidrIp": "0.0.0.0/0",
+    "Description": "HTTP from CloudFront to ALB",
+    "FromPort": 80,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ApiServiceLBSecurityGroup5C16BEF8",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 80
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/HttpFromCloudFront"
+   }
+  },
+  "DashboardBucket5758873D": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "era-dashboard-dev-946849521533",
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/DashboardBucket/Resource"
+   }
+  },
+  "DashboardBucketPolicy899268BC": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "DashboardBucket5758873D"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutBucketPolicy",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DashboardBucket5758873D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DashboardBucket5758873D",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "CanonicalUser": {
+         "Fn::GetAtt": [
+          "DashboardOai71CAD0BE",
+          "S3CanonicalUserId"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DashboardBucket5758873D",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DashboardBucket5758873D",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "CanonicalUser": {
+         "Fn::GetAtt": [
+          "DashboardOai71CAD0BE",
+          "S3CanonicalUserId"
+         ]
+        }
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "DashboardBucket5758873D",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/DashboardBucket/Policy/Resource"
+   }
+  },
+  "DashboardBucketAutoDeleteObjectsCustomResource0A022D13": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "DashboardBucket5758873D"
+    }
+   },
+   "DependsOn": [
+    "DashboardBucketPolicy899268BC"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/DashboardBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-946849521533-us-east-1",
+     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "DashboardBucket5758873D"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "DashboardOai71CAD0BE": {
+   "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+   "Properties": {
+    "CloudFrontOriginAccessIdentityConfig": {
+     "Comment": "ERA dashboard dev"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/DashboardOai/Resource"
+   }
+  },
+  "DashboardCdn2DA4E99A": {
+   "Type": "AWS::CloudFront::Distribution",
+   "Properties": {
+    "DistributionConfig": {
+     "CacheBehaviors": [
+      {
+       "AllowedMethods": [
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PUT",
+        "PATCH",
+        "POST",
+        "DELETE"
+       ],
+       "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+       "Compress": true,
+       "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
+       "PathPattern": "/api/*",
+       "TargetOriginId": "EraHostingdevDashboardCdnOrigin25E0EA298",
+       "ViewerProtocolPolicy": "redirect-to-https"
+      }
+     ],
+     "Comment": "ERA dashboard dev",
+     "CustomErrorResponses": [
+      {
+       "ErrorCachingMinTTL": 0,
+       "ErrorCode": 403,
+       "ResponseCode": 200,
+       "ResponsePagePath": "/index.html"
+      },
+      {
+       "ErrorCachingMinTTL": 0,
+       "ErrorCode": 404,
+       "ResponseCode": 200,
+       "ResponsePagePath": "/index.html"
+      }
+     ],
+     "DefaultCacheBehavior": {
+      "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+      "Compress": true,
+      "TargetOriginId": "EraHostingdevDashboardCdnOrigin170C9B199",
+      "ViewerProtocolPolicy": "redirect-to-https"
+     },
+     "DefaultRootObject": "index.html",
+     "Enabled": true,
+     "HttpVersion": "http2",
+     "IPV6Enabled": true,
+     "Origins": [
+      {
+       "DomainName": {
+        "Fn::GetAtt": [
+         "DashboardBucket5758873D",
+         "RegionalDomainName"
+        ]
+       },
+       "Id": "EraHostingdevDashboardCdnOrigin170C9B199",
+       "S3OriginConfig": {
+        "OriginAccessIdentity": {
+         "Fn::Join": [
+          "",
+          [
+           "origin-access-identity/cloudfront/",
+           {
+            "Ref": "DashboardOai71CAD0BE"
+           }
+          ]
+         ]
+        }
+       }
+      },
+      {
+       "CustomOriginConfig": {
+        "OriginProtocolPolicy": "http-only",
+        "OriginSSLProtocols": [
+         "TLSv1.2"
+        ]
+       },
+       "DomainName": {
+        "Fn::GetAtt": [
+         "ApiServiceLB08B891CD",
+         "DNSName"
+        ]
+       },
+       "Id": "EraHostingdevDashboardCdnOrigin25E0EA298"
+      }
+     ],
+     "Restrictions": {
+      "GeoRestriction": {
+       "Locations": [
+        "US",
+        "PK"
+       ],
+       "RestrictionType": "whitelist"
+      }
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/DashboardCdn/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5VSS2sbMRD+LfFZVs2mh9KbH00xBBy8uZVixtqxGFsrLZqRU7Psfy/atZNtGgo96XuNRhqm0MXnL3p2By88NdVp6miv21LAnBS88K5Fw7pdusSCUS0P/gYfIFoQfAY+rfBAnoSCz4H3SvAC5DGOtGttifFMBnPRFXbKBcu6fQz2ewypydYNd4rRRBSuwYPFqNuy50N5Rp1Cw7sGRDB61vOmcWQgd3wMUC3AgTdYvWuODljIuADVvk+Qt+dCtx9Xx+FFIz7OEQv6a+aGR/4zRIvy+rERzS8v+g+lSHJ5jfxb+GYjMv8lr32vd4qg1u02uH7C/fkUHJlLpgPKfeMOmFFYr4I5YVzXYHGelezpLTaBSUK8LIBR8b1uF8mchrEP6Ec7qekX+cnXyXiJ8vbwve4t1kN0niSs0KHgZn9EIzzpfqrBenvamP/H3UNBKSBYo++v7pRxIVWHGLzodhPJkp8bg8zrCr2QXIaNDql6yJkPEytiibRPt/0e867LyiZJk0T1QysFLHmrlokl1FvkkOKw4m/4D+sphjNVGPN4O+VDhfrIn87FTBczPbs7MtE0Ji9Uo94O529FYgRKswMAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraHosting-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ApiServiceLoadBalancerDNSBF9EB7FC": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiServiceLB08B891CD",
+     "DNSName"
+    ]
+   }
+  },
+  "ApiServiceServiceURL2EB28DB2": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "http://",
+      {
+       "Fn::GetAtt": [
+        "ApiServiceLB08B891CD",
+        "DNSName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "ApiLoadBalancerUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "http://",
+      {
+       "Fn::GetAtt": [
+        "ApiServiceLB08B891CD",
+        "DNSName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "DashboardBucketName": {
+   "Value": {
+    "Ref": "DashboardBucket5758873D"
+   }
+  },
+  "DashboardCloudFrontUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Fn::GetAtt": [
+        "DashboardCdn2DA4E99A",
+        "DomainName"
+       ]
+      }
+     ]
+    ]
+   }
+  },
+  "DashboardDistributionId": {
+   "Value": {
+    "Ref": "DashboardCdn2DA4E99A"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

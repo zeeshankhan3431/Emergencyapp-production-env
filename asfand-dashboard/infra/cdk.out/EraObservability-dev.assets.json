@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "12417ad5a7fa801ba6b551995dcde9bcc6211d948be15ab6a1beb7286632b6ee": {
+      "displayName": "EraObservability-dev Template",
+      "source": {
+        "path": "EraObservability-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "946849521533-us-east-1-f3712550": {
+          "bucketName": "cdk-hnb659fds-assets-946849521533-us-east-1",
+          "objectKey": "12417ad5a7fa801ba6b551995dcde9bcc6211d948be15ab6a1beb7286632b6ee.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::946849521533:role/cdk-hnb659fds-file-publishing-role-946849521533-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -38,8 +38,8 @@ export async function getDashboardStats() {
   const esc = await pool.query(
     `SELECT COUNT(*)::INT AS c FROM incidents
      WHERE is_deleted = FALSE
-       AND escalated_at IS NOT NULL
-       AND escalated_at >= $1 AND escalated_at <= $2`,
+       AND triggered_at IS NOT NULL
+       AND triggered_at >= $1 AND triggered_at <= $2`,
     [dayStart, dayEnd]
   );
 
@@ -85,7 +85,7 @@ export async function getDashboardStats() {
   const avgSec = avgRt.rows[0]?.sec;
   return {
     active_incidents:            active.rows[0]?.c ?? 0,
-    escalated_today:             esc.rows[0]?.c ?? 0,
+    created_today:               esc.rows[0]?.c ?? 0,
     resolved_today:              resToday.rows[0]?.c ?? 0,
     avg_response_time_seconds:   avgSec != null ? Math.round(Number(avgSec) * 100) / 100 : null,
     top_incident_types:          topTypes.rows.map((r) => ({ type: r.type, count: r.count })),

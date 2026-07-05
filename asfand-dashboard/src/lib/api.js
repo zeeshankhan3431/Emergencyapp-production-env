@@ -125,7 +125,12 @@ export function getIncidents(params = {}) {
   if (params.status) search.set('status', params.status);
   if (params.q) search.set('q', params.q);
   const qs = search.toString();
-  return request(`/incidents${qs ? `?${qs}` : ''}`);
+  return request(`/dashboard/incidents${qs ? `?${qs}` : ''}`);
+}
+
+/** Delete incident (Admin) — returns { ok, active_incidents, created_today } */
+export function deleteIncident(id) {
+  return request(`/dashboard/incidents/${id}`, { method: 'DELETE' });
 }
 
 /** Dashboard anonymised map points */

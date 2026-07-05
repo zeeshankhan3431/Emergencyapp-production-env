@@ -69,13 +69,17 @@ class EmergencyService {
     scenarioMessage: string,
     location: LocationResult | null,
     timestamp: number,
+    userInfo: { name: string, phone: string } | null,
   ): string {
     const when = new Date(timestamp).toLocaleString();
     const mapUrl = location
       ? `https://maps.google.com/?q=${location.lat},${location.lng}`
       : 'Location unavailable';
+    
+    const identityString = userInfo ? ` from ${userInfo.name} (${userInfo.phone})` : '';
+
     return [
-      'EMERGENCY ALERT',
+      `EMERGENCY ALERT${identityString}`,
       scenarioMessage,
       `Time: ${when}`,
       `Location: ${location ? `${location.lat}, ${location.lng}` : 'Unavailable'}`,
@@ -100,7 +104,16 @@ class EmergencyService {
       return;
     }
 
-    const alertMessage = this.buildContactAlertMessage(scenarioMessage, location, impactTimestamp);
+    let userInfo = null;
+    try {
+      const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+      const stored = await AsyncStorage.getItem('@ers_user_info');
+      if (stored) userInfo = JSON.parse(stored);
+    } catch {
+      // ignore
+    }
+
+    const alertMessage = this.buildContactAlertMessage(scenarioMessage, location, impactTimestamp, userInfo);
     let sent = 0;
     let failed = 0;
     await Promise.all(

@@ -68,8 +68,8 @@ export default function RecentIncidents({ items } = {}) {
                         </span>
                       </div>
                     </td>
-                    <td className="py-3 text-gray-600 max-w-[140px] truncate" title={row.location}>
-                      {row.location || '—'}
+                    <td className="py-3 text-gray-600 max-w-[160px] truncate" title={row.location}>
+                      {row.location || 'No GPS data'}
                     </td>
                     <td className="py-3">
                       <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${statusClass(row.status)}`}>

@@ -1,0 +1,1114 @@
+{
+ "Resources": {
+  "OpsAlertsB39E82AA": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "ERA ops dev",
+    "TopicName": "era-ops-alerts-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/OpsAlerts/Resource"
+   }
+  },
+  "OpsAlertsopsexamplecom614DCB06": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": "ops@example.com",
+    "Protocol": "email",
+    "TopicArn": {
+     "Ref": "OpsAlertsB39E82AA"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/OpsAlerts/ops@example.com/Resource"
+   }
+  },
+  "RealtimeThreatClassifierFnErrorRateAlarm804206BC": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda RealtimeThreatClassifierFn error rate > 1%",
+    "AlarmName": "era-dev-RealtimeThreatClassifierFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "RealtimeThreatClassifierFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefRealtimeThreatClassifierFn454656ED5C08E39D"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefRealtimeThreatClassifierFn454656ED5C08E39D"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/RealtimeThreatClassifierFnErrorRateAlarm/Resource"
+   }
+  },
+  "RealtimeThreatClassifierFnDurationAlarm76B9887A": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda RealtimeThreatClassifierFn p99 duration > 80% of timeout (8000ms)",
+    "AlarmName": "era-dev-RealtimeThreatClassifierFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefRealtimeThreatClassifierFn454656ED5C08E39D"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 8000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/RealtimeThreatClassifierFnDurationAlarm/Resource"
+   }
+  },
+  "EvidenceProcessorFnErrorRateAlarm97539CC0": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda EvidenceProcessorFn error rate > 1%",
+    "AlarmName": "era-dev-EvidenceProcessorFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "EvidenceProcessorFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefEvidenceProcessorFn637970DF0B6490F3"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefEvidenceProcessorFn637970DF0B6490F3"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/EvidenceProcessorFnErrorRateAlarm/Resource"
+   }
+  },
+  "EvidenceProcessorFnDurationAlarm4B1B3364": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda EvidenceProcessorFn p99 duration > 80% of timeout (24000ms)",
+    "AlarmName": "era-dev-EvidenceProcessorFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefEvidenceProcessorFn637970DF0B6490F3"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 24000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/EvidenceProcessorFnDurationAlarm/Resource"
+   }
+  },
+  "AudioTranscriptionWorkerFnErrorRateAlarm60F0D6DA": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda AudioTranscriptionWorkerFn error rate > 1%",
+    "AlarmName": "era-dev-AudioTranscriptionWorkerFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "AudioTranscriptionWorkerFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefAudioTranscriptionWorkerFnDD0BAE8670221E53"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefAudioTranscriptionWorkerFnDD0BAE8670221E53"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/AudioTranscriptionWorkerFnErrorRateAlarm/Resource"
+   }
+  },
+  "AudioTranscriptionWorkerFnDurationAlarm43D58EB7": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda AudioTranscriptionWorkerFn p99 duration > 80% of timeout (720000ms)",
+    "AlarmName": "era-dev-AudioTranscriptionWorkerFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefAudioTranscriptionWorkerFnDD0BAE8670221E53"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 720000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/AudioTranscriptionWorkerFnDurationAlarm/Resource"
+   }
+  },
+  "IncidentSummariserFnErrorRateAlarmF0C5C0C5": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda IncidentSummariserFn error rate > 1%",
+    "AlarmName": "era-dev-IncidentSummariserFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "IncidentSummariserFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentSummariserFn003C06576DEDC480"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentSummariserFn003C06576DEDC480"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/IncidentSummariserFnErrorRateAlarm/Resource"
+   }
+  },
+  "IncidentSummariserFnDurationAlarmADB65871": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda IncidentSummariserFn p99 duration > 80% of timeout (48000ms)",
+    "AlarmName": "era-dev-IncidentSummariserFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentSummariserFn003C06576DEDC480"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 48000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/IncidentSummariserFnDurationAlarm/Resource"
+   }
+  },
+  "IncidentEscalationHandlerFnErrorRateAlarm1174684F": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda IncidentEscalationHandlerFn error rate > 1%",
+    "AlarmName": "era-dev-IncidentEscalationHandlerFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "IncidentEscalationHandlerFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEscalationHandlerFnE2DCE8E3A26C1224"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEscalationHandlerFnE2DCE8E3A26C1224"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/IncidentEscalationHandlerFnErrorRateAlarm/Resource"
+   }
+  },
+  "IncidentEscalationHandlerFnDurationAlarm74499992": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda IncidentEscalationHandlerFn p99 duration > 80% of timeout (8000ms)",
+    "AlarmName": "era-dev-IncidentEscalationHandlerFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEscalationHandlerFnE2DCE8E3A26C1224"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 8000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/IncidentEscalationHandlerFnDurationAlarm/Resource"
+   }
+  },
+  "SmsDispatcherFnErrorRateAlarm02B2A638": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda SmsDispatcherFn error rate > 1%",
+    "AlarmName": "era-dev-SmsDispatcherFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "SmsDispatcherFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefSmsDispatcherFn3DBFE133696CEFB6"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefSmsDispatcherFn3DBFE133696CEFB6"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/SmsDispatcherFnErrorRateAlarm/Resource"
+   }
+  },
+  "SmsDispatcherFnDurationAlarmA41C62E4": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda SmsDispatcherFn p99 duration > 80% of timeout (8000ms)",
+    "AlarmName": "era-dev-SmsDispatcherFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefSmsDispatcherFn3DBFE133696CEFB6"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 8000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/SmsDispatcherFnDurationAlarm/Resource"
+   }
+  },
+  "PushDispatcherFnErrorRateAlarmE2227937": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda PushDispatcherFn error rate > 1%",
+    "AlarmName": "era-dev-PushDispatcherFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "PushDispatcherFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefPushDispatcherFnE440BA888CC5EB23"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefPushDispatcherFnE440BA888CC5EB23"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/PushDispatcherFnErrorRateAlarm/Resource"
+   }
+  },
+  "PushDispatcherFnDurationAlarmF67FDC8D": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda PushDispatcherFn p99 duration > 80% of timeout (8000ms)",
+    "AlarmName": "era-dev-PushDispatcherFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefPushDispatcherFnE440BA888CC5EB23"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 8000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/PushDispatcherFnDurationAlarm/Resource"
+   }
+  },
+  "MonthlyReportGeneratorFnErrorRateAlarmDEAE4DD0": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda MonthlyReportGeneratorFn error rate > 1%",
+    "AlarmName": "era-dev-MonthlyReportGeneratorFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "MonthlyReportGeneratorFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefMonthlyReportGeneratorFn2BCFE6BD94381BD1"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefMonthlyReportGeneratorFn2BCFE6BD94381BD1"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/MonthlyReportGeneratorFnErrorRateAlarm/Resource"
+   }
+  },
+  "MonthlyReportGeneratorFnDurationAlarm5FAA72A1": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda MonthlyReportGeneratorFn p99 duration > 80% of timeout (240000ms)",
+    "AlarmName": "era-dev-MonthlyReportGeneratorFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefMonthlyReportGeneratorFn2BCFE6BD94381BD1"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 240000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/MonthlyReportGeneratorFnDurationAlarm/Resource"
+   }
+  },
+  "HealthCheckFnErrorRateAlarmEF3CF6CD": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda HealthCheckFn error rate > 1%",
+    "AlarmName": "era-dev-HealthCheckFn-error-rate",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 2,
+    "Metrics": [
+     {
+      "Expression": "100 * (errors / FILL(invocations, 1))",
+      "Id": "expr_1",
+      "Label": "HealthCheckFn error %",
+      "ReturnData": true
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefHealthCheckFn641180DAF938E253"
+          }
+         }
+        ],
+        "MetricName": "Errors",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "invocations",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "FunctionName",
+          "Value": {
+           "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefHealthCheckFn641180DAF938E253"
+          }
+         }
+        ],
+        "MetricName": "Invocations",
+        "Namespace": "AWS/Lambda"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/HealthCheckFnErrorRateAlarm/Resource"
+   }
+  },
+  "HealthCheckFnDurationAlarmB02F7CE5": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Lambda HealthCheckFn p99 duration > 80% of timeout (4000ms)",
+    "AlarmName": "era-dev-HealthCheckFn-duration-warn",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefHealthCheckFn641180DAF938E253"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "ExtendedStatistic": "p99",
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Threshold": 4000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/HealthCheckFnDurationAlarm/Resource"
+   }
+  },
+  "KinesisIteratorAge66F7CC3B": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "Kinesis consumer falling behind (IteratorAge)",
+    "AlarmName": "era-dev-kinesis-iterator-age",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "StreamName",
+      "Value": {
+       "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEvents53BDC06D05CA1CAC"
+      }
+     }
+    ],
+    "EvaluationPeriods": 2,
+    "MetricName": "GetRecords.IteratorAgeMilliseconds",
+    "Namespace": "AWS/Kinesis",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Threshold": 30000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/KinesisIteratorAge/Resource"
+   }
+  },
+  "RdsCpuE2A708B5": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "OpsAlertsB39E82AA"
+     }
+    ],
+    "AlarmDescription": "RDS CPUUtilization > 80%",
+    "AlarmName": "era-dev-rds-cpu",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "Dimensions": [
+     {
+      "Name": "DBInstanceIdentifier",
+      "Value": {
+       "Fn::ImportValue": "EraData-dev:ExportsOutputRefPostgres9DC8BB0479C34812"
+      }
+     }
+    ],
+    "EvaluationPeriods": 3,
+    "MetricName": "CPUUtilization",
+    "Namespace": "AWS/RDS",
+    "Period": 300,
+    "Statistic": "Average",
+    "Threshold": 80,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/RdsCpu/Resource"
+   }
+  },
+  "EraOps7913064C": {
+   "Type": "AWS::CloudWatch::Dashboard",
+   "Properties": {
+    "DashboardBody": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"widgets\":[{\"type\":\"metric\",\"width\":24,\"height\":6,\"x\":0,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Incident throughput (Kinesis incoming records)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Kinesis\",\"IncomingRecords\",\"StreamName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEvents53BDC06D05CA1CAC"
+       },
+       "\",{\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":24,\"height\":6,\"x\":0,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"AI pipeline latency (p99)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefAudioTranscriptionWorkerFnDD0BAE8670221E53"
+       },
+       "\",{\"stat\":\"p99\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentSummariserFn003C06576DEDC480"
+       },
+       "\",{\"stat\":\"p99\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Escalation rate (invocations / 5m)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEscalationHandlerFnE2DCE8E3A26C1224"
+       },
+       "\",{\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"HTTP API 5xx\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"5xx\",\"ApiId\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefHttpApiF5A9A8A7F70B5BDD"
+       },
+       "\",{\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":24,\"height\":6,\"x\":0,\"y\":18,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda aggregate errors (sum)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefRealtimeThreatClassifierFn454656ED5C08E39D"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefEvidenceProcessorFn637970DF0B6490F3"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefAudioTranscriptionWorkerFnDD0BAE8670221E53"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentSummariserFn003C06576DEDC480"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefIncidentEscalationHandlerFnE2DCE8E3A26C1224"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefSmsDispatcherFn3DBFE133696CEFB6"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefPushDispatcherFnE440BA888CC5EB23"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefMonthlyReportGeneratorFn2BCFE6BD94381BD1"
+       },
+       "\",{\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "EraCompute-dev:ExportsOutputRefHealthCheckFn641180DAF938E253"
+       },
+       "\",{\"stat\":\"Sum\"}]],\"yAxis\":{}}}]}"
+      ]
+     ]
+    },
+    "DashboardName": "era-ops-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/EraOps/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KywrCMBBFv6X7dAzBhVvRvWC7l2lS6fSRhExiFyH/LqEgru45h6tAnS8gG9y51WZpVxogdxH1InDnV2bLkHvnSYvb2x7QpYF1IB/J2Vr/vQi9umR2jHqCfF0xbPVywB15GhwGU9NPSqn6SNGnWIR1ZoSZTx8lQUmQzcxEbUg20jbC89gvTfbenbYAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraObservability-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AlertTopicArn": {
+   "Value": {
+    "Ref": "OpsAlertsB39E82AA"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,783 @@
+{
+ "Resources": {
+  "EraVpc6710DC47": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "era-vpc-dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/Resource"
+   }
+  },
+  "EraVpcpublicSubnet1SubnetAEB0216E": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet1/Subnet"
+   }
+  },
+  "EraVpcpublicSubnet1RouteTable57352221": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet1/RouteTable"
+   }
+  },
+  "EraVpcpublicSubnet1RouteTableAssociationC268003C": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EraVpcpublicSubnet1RouteTable57352221"
+    },
+    "SubnetId": {
+     "Ref": "EraVpcpublicSubnet1SubnetAEB0216E"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet1/RouteTableAssociation"
+   }
+  },
+  "EraVpcpublicSubnet1DefaultRoute670D58D1": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "EraVpcIGW5B4A77E0"
+    },
+    "RouteTableId": {
+     "Ref": "EraVpcpublicSubnet1RouteTable57352221"
+    }
+   },
+   "DependsOn": [
+    "EraVpcVPCGW3F7625C6"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet1/DefaultRoute"
+   }
+  },
+  "EraVpcpublicSubnet1EIP3F107404": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet1/EIP"
+   }
+  },
+  "EraVpcpublicSubnet1NATGatewayA1D60E83": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "EraVpcpublicSubnet1EIP3F107404",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "EraVpcpublicSubnet1SubnetAEB0216E"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "EraVpcpublicSubnet1DefaultRoute670D58D1",
+    "EraVpcpublicSubnet1RouteTableAssociationC268003C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet1/NATGateway"
+   }
+  },
+  "EraVpcpublicSubnet2Subnet427ECD89": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet2/Subnet"
+   }
+  },
+  "EraVpcpublicSubnet2RouteTable88BB4527": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet2/RouteTable"
+   }
+  },
+  "EraVpcpublicSubnet2RouteTableAssociationFF047A70": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EraVpcpublicSubnet2RouteTable88BB4527"
+    },
+    "SubnetId": {
+     "Ref": "EraVpcpublicSubnet2Subnet427ECD89"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet2/RouteTableAssociation"
+   }
+  },
+  "EraVpcpublicSubnet2DefaultRoute04531CB5": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "EraVpcIGW5B4A77E0"
+    },
+    "RouteTableId": {
+     "Ref": "EraVpcpublicSubnet2RouteTable88BB4527"
+    }
+   },
+   "DependsOn": [
+    "EraVpcVPCGW3F7625C6"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet2/DefaultRoute"
+   }
+  },
+  "EraVpcpublicSubnet2EIP1F533566": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet2/EIP"
+   }
+  },
+  "EraVpcpublicSubnet2NATGatewayD22FD331": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "EraVpcpublicSubnet2EIP1F533566",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "EraVpcpublicSubnet2Subnet427ECD89"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/publicSubnet2"
+     }
+    ]
+   },
+   "DependsOn": [
+    "EraVpcpublicSubnet2DefaultRoute04531CB5",
+    "EraVpcpublicSubnet2RouteTableAssociationFF047A70"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/publicSubnet2/NATGateway"
+   }
+  },
+  "EraVpcprivateSubnet1SubnetD079BA01": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet1/Subnet"
+   }
+  },
+  "EraVpcprivateSubnet1RouteTableCB9A95DB": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/privateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet1/RouteTable"
+   }
+  },
+  "EraVpcprivateSubnet1RouteTableAssociationF3618457": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EraVpcprivateSubnet1RouteTableCB9A95DB"
+    },
+    "SubnetId": {
+     "Ref": "EraVpcprivateSubnet1SubnetD079BA01"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet1/RouteTableAssociation"
+   }
+  },
+  "EraVpcprivateSubnet1DefaultRouteB56015EE": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "EraVpcpublicSubnet1NATGatewayA1D60E83"
+    },
+    "RouteTableId": {
+     "Ref": "EraVpcprivateSubnet1RouteTableCB9A95DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet1/DefaultRoute"
+   }
+  },
+  "EraVpcprivateSubnet2Subnet77EC42BD": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet2/Subnet"
+   }
+  },
+  "EraVpcprivateSubnet2RouteTable21F61FB1": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "EraNetwork-dev/EraVpc/privateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet2/RouteTable"
+   }
+  },
+  "EraVpcprivateSubnet2RouteTableAssociation793BC85E": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "EraVpcprivateSubnet2RouteTable21F61FB1"
+    },
+    "SubnetId": {
+     "Ref": "EraVpcprivateSubnet2Subnet77EC42BD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet2/RouteTableAssociation"
+   }
+  },
+  "EraVpcprivateSubnet2DefaultRoute86B6A0A9": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "EraVpcpublicSubnet2NATGatewayD22FD331"
+    },
+    "RouteTableId": {
+     "Ref": "EraVpcprivateSubnet2RouteTable21F61FB1"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/privateSubnet2/DefaultRoute"
+   }
+  },
+  "EraVpcIGW5B4A77E0": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "era-vpc-dev"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/IGW"
+   }
+  },
+  "EraVpcVPCGW3F7625C6": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "EraVpcIGW5B4A77E0"
+    },
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/VPCGW"
+   }
+  },
+  "EraVpcS3Endpoint11E93058": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "EraVpcprivateSubnet1RouteTableCB9A95DB"
+     },
+     {
+      "Ref": "EraVpcprivateSubnet2RouteTable21F61FB1"
+     },
+     {
+      "Ref": "EraVpcpublicSubnet1RouteTable57352221"
+     },
+     {
+      "Ref": "EraVpcpublicSubnet2RouteTable88BB4527"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".s3"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "era-vpc-dev"
+     }
+    ],
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/S3Endpoint/Resource"
+   }
+  },
+  "EraVpcDynamoDbEndpoint5BEBE21F": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "EraVpcprivateSubnet1RouteTableCB9A95DB"
+     },
+     {
+      "Ref": "EraVpcprivateSubnet2RouteTable21F61FB1"
+     },
+     {
+      "Ref": "EraVpcpublicSubnet1RouteTable57352221"
+     },
+     {
+      "Ref": "EraVpcpublicSubnet2RouteTable88BB4527"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".dynamodb"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "era-vpc-dev"
+     }
+    ],
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/EraVpc/DynamoDbEndpoint/Resource"
+   }
+  },
+  "LambdaSg30A6108C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Lambda / API compute",
+    "GroupName": "era-lambda-sg-dev",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/LambdaSg/Resource"
+   }
+  },
+  "ElastiCacheSg3DA9FF1D": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "ElastiCache Redis",
+    "GroupName": "era-elasticache-sg-dev",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "255.255.255.255/32",
+      "Description": "Disallow all traffic",
+      "FromPort": 252,
+      "IpProtocol": "icmp",
+      "ToPort": 86
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/ElastiCacheSg/Resource"
+   }
+  },
+  "ElastiCacheSgfromEraNetworkdevLambdaSg330BBC866379EB866E0E": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Redis from Lambda",
+    "FromPort": 6379,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "ElastiCacheSg3DA9FF1D",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "LambdaSg30A6108C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 6379
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/ElastiCacheSg/from EraNetworkdevLambdaSg330BBC86:6379"
+   }
+  },
+  "RdsSg7F9F43B6": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "RDS PostgreSQL",
+    "GroupName": "era-rds-sg-dev",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "255.255.255.255/32",
+      "Description": "Disallow all traffic",
+      "FromPort": 252,
+      "IpProtocol": "icmp",
+      "ToPort": 86
+     }
+    ],
+    "VpcId": {
+     "Ref": "EraVpc6710DC47"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/RdsSg/Resource"
+   }
+  },
+  "RdsSgfromEraNetworkdevLambdaSg330BBC865432CE78229A": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Postgres from Lambda",
+    "FromPort": 5432,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "RdsSg7F9F43B6",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "LambdaSg30A6108C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5432
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/RdsSg/from EraNetworkdevLambdaSg330BBC86:5432"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/32OsWrDQBBEv8X96SJEirTGGKMmEVJQG1arTbK2vHfc7VkY438PsoXUpZqZxzBMYYvXN5tvYIwZ9qds4M7eGgU8GRjjF2Fhb61Hs/uWttqZKnUDY5M6IZ3Y6mqXlD6hG2jlK9vG6JBB2clSnsy+rCZ5Bz2A0ghXUwW+gNI6XIpSEFoKzydz2qoC/p5J1Myk9biX3jsWnatLbAhTYL0egkv+8fJfUMpPoBjvpqboUsDH4Y+kPundiOvJHuPLpchtkdt8c4zMWUiifCZbP/UPxYTEKV0BAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "EraNetwork-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "VpcId": {
+   "Value": {
+    "Ref": "EraVpc6710DC47"
+   }
+  },
+  "LambdaSgId": {
+   "Value": {
+    "Fn::GetAtt": [
+     "LambdaSg30A6108C",
+     "GroupId"
+    ]
+   }
+  },
+  "RdsSgId": {
+   "Value": {
+    "Fn::GetAtt": [
+     "RdsSg7F9F43B6",
+     "GroupId"
+    ]
+   }
+  },
+  "ElastiCacheSgId": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ElastiCacheSg3DA9FF1D",
+     "GroupId"
+    ]
+   }
+  },
+  "ExportsOutputRefEraVpc6710DC47493D1503": {
+   "Value": {
+    "Ref": "EraVpc6710DC47"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpc6710DC47493D1503"
+   }
+  },
+  "ExportsOutputFnGetAttLambdaSg30A6108CGroupId30BB2F0D": {
+   "Value": {
+    "Fn::GetAtt": [
+     "LambdaSg30A6108C",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputFnGetAttLambdaSg30A6108CGroupId30BB2F0D"
+   }
+  },
+  "ExportsOutputRefEraVpcprivateSubnet1SubnetD079BA0183CB9A21": {
+   "Value": {
+    "Ref": "EraVpcprivateSubnet1SubnetD079BA01"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpcprivateSubnet1SubnetD079BA0183CB9A21"
+   }
+  },
+  "ExportsOutputRefEraVpcprivateSubnet2Subnet77EC42BD195859C9": {
+   "Value": {
+    "Ref": "EraVpcprivateSubnet2Subnet77EC42BD"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpcprivateSubnet2Subnet77EC42BD195859C9"
+   }
+  },
+  "ExportsOutputFnGetAttRdsSg7F9F43B6GroupId133E31A8": {
+   "Value": {
+    "Fn::GetAtt": [
+     "RdsSg7F9F43B6",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputFnGetAttRdsSg7F9F43B6GroupId133E31A8"
+   }
+  },
+  "ExportsOutputFnGetAttElastiCacheSg3DA9FF1DGroupId0AE1DF35": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ElastiCacheSg3DA9FF1D",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputFnGetAttElastiCacheSg3DA9FF1DGroupId0AE1DF35"
+   }
+  },
+  "ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C": {
+   "Value": {
+    "Ref": "EraVpcpublicSubnet1SubnetAEB0216E"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpcpublicSubnet1SubnetAEB0216ED2BA284C"
+   }
+  },
+  "ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53": {
+   "Value": {
+    "Ref": "EraVpcpublicSubnet2Subnet427ECD89"
+   },
+   "Export": {
+    "Name": "EraNetwork-dev:ExportsOutputRefEraVpcpublicSubnet2Subnet427ECD893F9C0B53"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

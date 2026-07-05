@@ -1,9 +1,9 @@
 /**
- * VoiceMicButton — speech-to-text for emergency message fields.
+ * VoiceMicButton — speech-to-text, auto-detects language via device locale.
+ * Android: system speech recognizer via NativeModules.EmergencyModule
+ * iOS: @react-native-voice/voice
  *
- * Android: system speech recognizer (Intent) via NativeModules.EmergencyModule
- *   — reliable on emulator; shows Google “Speak now” UI.
- * iOS: @react-native-voice/voice if linked; else type manually.
+ * No language selection prompt — tap mic and speak in any language.
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 import { colors } from '../theme/colors';
 
-/** Do not import @react-native-voice/voice at top level — on Android it can throw / reject and cause a red "uncaught (in promise)" banner. */
 function getIOSVoiceModule(): {
   onSpeechStart: (cb: () => void) => void;
   onSpeechResults: (cb: (e: { value?: string[] }) => void) => void;
@@ -40,26 +39,24 @@ function getIOSVoiceModule(): {
 
 interface Props {
   onResult: (text: string) => void;
-  language?: string; // BCP-47 e.g. 'en-US', 'ur-PK', 'hi-IN'
 }
 
-const SUPPORTED_LANGUAGES = [
-  { code: 'en-US', label: '🇺🇸 English' },
-  { code: 'ur-PK', label: '🇵🇰 Urdu' },
-  { code: 'hi-IN', label: '🇮🇳 Hindi' },
-  { code: 'ar-SA', label: '🇸🇦 Arabic' },
-  { code: 'fr-FR', label: '🇫🇷 French' },
-];
+/** Get device locale for auto-detection — fallback to en-US */
+function getDeviceLocale(): string {
+  try {
+    const locale =
+      (NativeModules.I18nManager?.localeIdentifier as string | undefined) ||
+      'en-US';
+    return locale.replace('_', '-');
+  } catch {
+    return 'en-US';
+  }
+}
 
 function formatSpeechError(err: any): string {
   const raw = String(err?.message ?? err ?? '');
-  // Android SpeechRecognizer legacy codes; error 7 = NO_MATCH
   if (raw.includes('error code: 7') || raw.includes('code: 7')) {
-    return (
-      'No speech recognized (code 7).\n\n' +
-      'Emulator: open Extended Controls (⋯) → Microphone → turn on virtual mic, or use a real device.\n' +
-      'Also try English (en-US) first, speak after the beep, and keep the mic close.'
-    );
+    return 'No speech recognized. Please speak clearly after the beep.';
   }
   if (raw.includes('code: 6') || raw.includes('error code: 6')) {
     return 'Listening timed out. Please speak a little longer, then pause.';
@@ -67,9 +64,9 @@ function formatSpeechError(err: any): string {
   return raw || 'Could not capture speech. Please try again or type your message.';
 }
 
-const VoiceMicButton: React.FC<Props> = ({ onResult, language = 'en-US' }) => {
+const VoiceMicButton: React.FC<Props> = ({ onResult }) => {
   const [isListening, setIsListening] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(language);
+  const locale = getDeviceLocale();
 
   // iOS only: react-native-voice event wiring
   useEffect(() => {
@@ -88,11 +85,7 @@ const VoiceMicButton: React.FC<Props> = ({ onResult, language = 'en-US' }) => {
       void Promise.resolve(Voice.destroy?.())
         .catch(() => {})
         .finally(() => {
-          try {
-            Voice.removeAllListeners();
-          } catch {
-            /* noop */
-          }
+          try { Voice.removeAllListeners(); } catch { /* noop */ }
         });
     };
   }, [onResult]);
@@ -102,10 +95,7 @@ const VoiceMicButton: React.FC<Props> = ({ onResult, language = 'en-US' }) => {
       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
     );
     if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-      Alert.alert(
-        'Microphone Permission',
-        'Please allow microphone permission to use voice input.',
-      );
+      Alert.alert('Microphone Permission', 'Please allow microphone permission to use voice input.');
       return;
     }
 
@@ -116,24 +106,19 @@ const VoiceMicButton: React.FC<Props> = ({ onResult, language = 'en-US' }) => {
 
     setIsListening(true);
     try {
-      const result = await NativeModules.EmergencyModule.startSpeechRecognition(
-        selectedLang,
-      );
+      const result = await NativeModules.EmergencyModule.startSpeechRecognition(locale);
       const text = result?.text?.trim();
       if (text) {
         onResult(text);
       } else {
-        Alert.alert(
-          'Voice Error',
-          'No text returned. Try speaking again or type your message.',
-        );
+        Alert.alert('Voice Error', 'No text returned. Try speaking again or type your message.');
       }
     } catch (err: any) {
       Alert.alert('Voice Error', formatSpeechError(err));
     } finally {
       setIsListening(false);
     }
-  }, [onResult, selectedLang]);
+  }, [onResult, locale]);
 
   const startListening = useCallback(async () => {
     if (Platform.OS === 'android') {
@@ -144,15 +129,12 @@ const VoiceMicButton: React.FC<Props> = ({ onResult, language = 'en-US' }) => {
     if (Platform.OS === 'ios') {
       const Voice = getIOSVoiceModule();
       if (!Voice) {
-        Alert.alert(
-          'Voice Input',
-          'Voice module is not available. Type your message or rebuild with @react-native-voice/voice linked.',
-        );
+        Alert.alert('Voice Input', 'Voice module is not available. Type your message instead.');
         return;
       }
       try {
         setIsListening(true);
-        await Voice.start(selectedLang);
+        await Voice.start(locale);
       } catch (err: any) {
         setIsListening(false);
         Alert.alert('Voice Error', err?.message ?? 'Voice input failed.');
@@ -161,40 +143,20 @@ const VoiceMicButton: React.FC<Props> = ({ onResult, language = 'en-US' }) => {
     }
 
     Alert.alert('Voice Input', 'Voice input is only configured for Android and iOS.');
-  }, [selectedLang, startAndroidSpeech]);
-
-  const showLangPicker = () => {
-    Alert.alert(
-      '🌐 Select Language',
-      'Choose the language you will speak in:',
-      [
-        ...SUPPORTED_LANGUAGES.map(lang => ({
-          text: lang.label,
-          onPress: () => setSelectedLang(lang.code),
-        })),
-        { text: 'Cancel', style: 'cancel' },
-      ],
-    );
-  };
+  }, [locale, startAndroidSpeech]);
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={[styles.micButton, isListening && styles.micButtonActive]}
         onPress={startListening}
-        onLongPress={showLangPicker}
-        accessibilityLabel="Tap to speak, long press to change language"
+        accessibilityLabel="Tap to speak"
         accessibilityRole="button">
         <Text style={styles.micIcon}>{isListening ? '🔴' : '🎤'}</Text>
       </TouchableOpacity>
       <Text style={styles.hint}>
-        {isListening ? 'Listening…' : `Tap to speak (${selectedLang})`}
+        {isListening ? 'Listening…' : 'Tap to speak'}
       </Text>
-      {Platform.OS === 'android' ? (
-        <Text style={styles.langHint}>
-          Google speech UI opens — enable Microphone in emulator Extended Controls (⋯)
-        </Text>
-      ) : null}
     </View>
   );
 };
@@ -231,5 +193,4 @@ const styles = StyleSheet.create({
   },
   micIcon: { fontSize: 28 },
   hint: { marginTop: 6, fontSize: 12, color: '#555', fontWeight: '600' },
-  langHint: { fontSize: 10, color: '#999', marginTop: 2, textAlign: 'center' },
 });

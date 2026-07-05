@@ -1,0 +1,43 @@
+{
+  "name": "security-app-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.1029.0",
+    "@aws-sdk/client-dynamodb": "^3.1029.0",
+    "@aws-sdk/client-kinesis": "^3.1029.0",
+    "@aws-sdk/client-opensearch": "^3.1029.0",
+    "@aws-sdk/client-s3": "^3.1029.0",
+    "@aws-sdk/client-sagemaker-runtime": "^3.1029.0",
+    "@aws-sdk/client-secrets-manager": "^3.1029.0",
+    "@aws-sdk/client-sns": "^3.1029.0",
+    "@aws-sdk/client-sqs": "^3.1029.0",
+    "@aws-sdk/client-ssm": "^3.1029.0",
+    "@aws-sdk/client-transcribe": "^3.1029.0",
+    "@aws-sdk/lib-dynamodb": "^3.1029.0",
+    "@aws-sdk/s3-request-presigner": "^3.1029.0",
+    "@vitest/coverage-v8": "^4.1.4",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "ioredis": "^5.10.1",
+    "jose": "^5.9.6",
+    "pg": "^8.20.0",
+    "pg-mem": "^3.0.14",
+    "socket.io": "^4.8.3",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.4",
+    "zod": "^4.3.6",
+    "zod-validation-error": "^5.0.0"
+  }
+}

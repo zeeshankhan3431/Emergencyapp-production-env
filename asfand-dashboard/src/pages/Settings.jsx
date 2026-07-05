@@ -12,8 +12,6 @@ import { getHealth } from '../lib/api';
 export default function Settings() {
   const { user } = useAuth();
   const [apiStatus, setApiStatus] = useState('checking'); // 'checking' | 'ok' | 'error'
-  const [notifyEscalations, setNotifyEscalations] = useState(true);
-  const [notifyResolved, setNotifyResolved] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   useEffect(() => {
@@ -92,8 +90,6 @@ export default function Settings() {
           </div>
           <div className="space-y-3">
             {[
-              { label: 'Alert on new escalation', value: notifyEscalations, onChange: setNotifyEscalations },
-              { label: 'Alert on case resolved', value: notifyResolved, onChange: setNotifyResolved },
               { label: 'Auto-refresh dashboard data', value: autoRefresh, onChange: setAutoRefresh },
             ].map(({ label, value, onChange }) => (
               <div key={label} className="flex items-center justify-between text-sm">

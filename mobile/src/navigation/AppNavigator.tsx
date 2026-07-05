@@ -12,7 +12,10 @@ import ConfirmationScreen from '../screens/ConfirmationScreen';
 import EmergencyActiveScreen from '../screens/EmergencyActiveScreen';
 import IOSDisclosureScreen from '../screens/IOSDisclosureScreen';
 
+import OnboardingScreen from '../screens/OnboardingScreen';
+
 export type RootStackParamList = {
+  Onboarding: undefined;
   Home: undefined;
   Confirmation: undefined;
   EmergencyActive: undefined;
@@ -22,8 +25,8 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
-  // Show iOS disclosure screen first on iPhone
-  const initialRoute = Platform.OS === 'ios' ? 'IOSDisclosure' : 'Home';
+  // Start with Onboarding. Onboarding will check storage and redirect if needed.
+  const initialRoute = 'Onboarding';
 
   return (
     <EmergencyProvider>
@@ -34,6 +37,12 @@ const AppNavigator: React.FC = () => {
             headerShown: false,
             animation: 'slide_from_bottom',
           }}>
+
+          <Stack.Screen 
+            name="Onboarding" 
+            component={OnboardingScreen} 
+            options={{ animation: 'fade' }}
+          />
 
           {/* iOS-only: limitation disclosure screen */}
           {Platform.OS === 'ios' && (

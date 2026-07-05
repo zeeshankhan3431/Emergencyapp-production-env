@@ -12,7 +12,6 @@ import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { to: '/', icon: HiOutlineSquares2X2, label: 'Dashboard' },
-  { to: '/equipment', icon: HiOutlineQrCode, label: 'Equipment' },
   { to: '/incidents', icon: HiOutlineSun, label: 'Incidents' },
   { to: '/analytics', icon: HiOutlineChartBar, label: 'Analytics' },
   { to: '/reports', icon: HiOutlineDocumentText, label: 'Reports' },
